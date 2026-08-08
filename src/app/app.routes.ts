@@ -18,4 +18,13 @@ export const routes: Routes = [
         (module) => module.StandaloneVsNgmodulePage,
       ),
   },
+  {
+    path: 'components-vs-directives',
+    title: 'Components vs Directives | Angular Concepts Lab',
+    // This lesson is another independently lazy-loaded standalone page.
+    loadComponent: () =>
+      import('./lessons/components-vs-directives/components-vs-directives-page/components-vs-directives-page').then(
+        (module) => module.ComponentsVsDirectivesPage,
+      ),
+  },
 ];

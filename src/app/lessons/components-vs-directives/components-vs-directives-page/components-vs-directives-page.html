@@ -1,0 +1,63 @@
+<header class="lesson-heading">
+  <p class="eyebrow">Lesson 2</p>
+  <h1>Components vs directives</h1>
+  <p>
+    A component owns new markup. A directive attaches reusable behavior to markup that already
+    exists.
+  </p>
+</header>
+
+<section aria-labelledby="component-title">
+  <h2 id="component-title">Component: a reusable view</h2>
+  <p>The custom element below gets an entire view from <code>StatusCard</code>.</p>
+  <!-- Angular creates the component host, then renders status-card.html inside it. -->
+  <app-status-card />
+</section>
+
+<section aria-labelledby="directive-title">
+  <h2 id="directive-title">Directive: reusable behavior</h2>
+  <p>Hover or focus these ordinary elements. Their original HTML remains in this page.</p>
+  <div class="directive-examples">
+    <!-- The directive augments this paragraph; it does not replace its content. -->
+    <p appInteractiveHighlight tabindex="0">I am an existing paragraph with added behavior.</p>
+    <!-- The same directive decorates a different element without owning its markup. -->
+    <button appInteractiveHighlight type="button">I am an existing button</button>
+  </div>
+</section>
+
+<table>
+  <thead>
+    <tr>
+      <th scope="col">Question</th>
+      <th scope="col">Component</th>
+      <th scope="col">Directive</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">Has its own template?</th>
+      <td>Yes</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <th scope="row">Typical selector?</th>
+      <td>Element: <code>app-status-card</code></td>
+      <td>Attribute: <code>[appInteractiveHighlight]</code></td>
+    </tr>
+    <tr>
+      <th scope="row">Purpose?</th>
+      <td>Create a reusable UI view</td>
+      <td>Add behavior to an existing host</td>
+    </tr>
+    <tr>
+      <th scope="row">Instances per element?</th>
+      <td>At most one component</td>
+      <td>Multiple directives can coexist</td>
+    </tr>
+  </tbody>
+</table>
+
+<aside>
+  <strong>Mental model:</strong> every component is a specialized directive with a template, but
+  most directives are not components.
+</aside>

@@ -1,0 +1,56 @@
+:host {
+  display: block;
+}
+.lesson-heading {
+  max-width: 48rem;
+}
+.eyebrow {
+  color: #b91c1c;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+h1 {
+  margin-block: 0.25rem 1rem;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  line-height: 1.05;
+}
+section {
+  margin-block: 2.5rem;
+}
+.directive-examples {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+}
+.directive-examples > * {
+  margin: 0;
+  padding: 1rem;
+  border: 2px dashed #64748b;
+  border-radius: 0.7rem;
+  transition: 150ms ease;
+}
+.interactive-highlight-active {
+  background: #fef3c7;
+  border-color: #d97706;
+  transform: translateY(-0.15rem);
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+}
+th,
+td {
+  padding: 0.9rem;
+  border: 1px solid #cbd5e1;
+  text-align: left;
+}
+thead {
+  background: #e2e8f0;
+}
+aside {
+  margin-top: 2rem;
+  padding: 1rem 1.25rem;
+  border-left: 0.3rem solid #2563eb;
+  background: #eff6ff;
+}

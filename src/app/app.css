@@ -20,6 +20,12 @@
   text-decoration: none;
 }
 
+nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
 .brand {
   font-size: 1.1rem;
   font-weight: 700;

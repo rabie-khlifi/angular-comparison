@@ -1,0 +1,9 @@
+<!-- Everything here becomes the component's view inside <app-status-card>. -->
+<article class="status-card">
+  <span class="status-dot" [class.online]="isOnline()" aria-hidden="true"></span>
+  <div>
+    <h2>Learning server</h2>
+    <p>{{ isOnline() ? 'Online and ready' : 'Offline for maintenance' }}</p>
+  </div>
+  <button type="button" (click)="toggleStatus()">Toggle status</button>
+</article>
