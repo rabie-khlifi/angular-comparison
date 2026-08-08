@@ -1,0 +1,57 @@
+<header class="lesson-heading">
+  <p class="eyebrow">Lesson 1</p>
+  <h1>Standalone components vs NgModules</h1>
+  <p>
+    Both cards behave the same. The difference is how Angular discovers dependencies and how other
+    code imports them.
+  </p>
+</header>
+
+<section class="examples" aria-label="Live component comparison">
+  <!-- This works because the standalone class is in this page's imports. -->
+  <app-standalone-example />
+  <!-- This works because LegacyExampleModule exports its declaration. -->
+  <app-legacy-example />
+</section>
+
+<section class="comparison" aria-labelledby="comparison-title">
+  <h2 id="comparison-title">What actually changes?</h2>
+  <div class="table-wrapper">
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">Question</th>
+          <th scope="col">Standalone</th>
+          <th scope="col">NgModule style</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">Who owns the component?</th>
+          <td>The component is self-contained.</td>
+          <td>Exactly one NgModule declares it.</td>
+        </tr>
+        <tr>
+          <th scope="row">Where are template dependencies listed?</th>
+          <td>In the component's <code>imports</code>.</td>
+          <td>In the declaring NgModule's <code>imports</code>.</td>
+        </tr>
+        <tr>
+          <th scope="row">How is it shared?</th>
+          <td>Import the component class directly.</td>
+          <td>Export it, then import its module.</td>
+        </tr>
+        <tr>
+          <th scope="row">Preferred for new code?</th>
+          <td>Yes.</td>
+          <td>Mainly existing code and module-based libraries.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<aside class="remember">
+  <strong>Remember:</strong> standalone does not mean isolated, and NgModule does not change
+  component behavior. They are dependency-organization models that can coexist.
+</aside>

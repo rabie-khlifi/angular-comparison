@@ -1,0 +1,36 @@
+:host {
+  display: block;
+  min-height: 100vh;
+  background: #f8fafc;
+  color: #172033;
+  font-family: system-ui, sans-serif;
+}
+
+.site-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem clamp(1rem, 5vw, 4rem);
+  background: #172033;
+}
+
+.site-header a {
+  color: #dbeafe;
+  text-decoration: none;
+}
+
+.brand {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+.site-header .active-link {
+  color: #fff;
+  text-decoration: underline;
+  text-underline-offset: 0.35rem;
+}
+.page-shell {
+  width: min(70rem, calc(100% - 2rem));
+  margin-inline: auto;
+  padding-block: 2rem 4rem;
+}
