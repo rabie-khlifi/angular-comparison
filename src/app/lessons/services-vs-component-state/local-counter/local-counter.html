@@ -1,0 +1,9 @@
+<article class="counter-card">
+  <p class="label">Component-owned state</p>
+  <h3>{{ label() }}</h3>
+  <p class="count">{{ count() }}</p>
+  <div class="actions">
+    <button type="button" (click)="increment()">Increment only me</button>
+    <button type="button" class="secondary" (click)="reset()">Reset me</button>
+  </div>
+</article>

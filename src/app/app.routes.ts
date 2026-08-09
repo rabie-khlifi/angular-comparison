@@ -69,4 +69,12 @@ export const routes: Routes = [
         (module) => module.OutputsVsTwoWayBindingPage,
       ),
   },
+  {
+    path: 'services-vs-component-state',
+    title: 'Services vs Component State | Angular Concepts Lab',
+    loadComponent: () =>
+      import('./lessons/services-vs-component-state/services-vs-component-state-page/services-vs-component-state-page').then(
+        (module) => module.ServicesVsComponentStatePage,
+      ),
+  },
 ];

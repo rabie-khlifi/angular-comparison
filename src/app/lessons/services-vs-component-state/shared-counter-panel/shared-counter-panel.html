@@ -1,0 +1,10 @@
+<article class="counter-card">
+  <p class="label">Service-owned state</p>
+  <h3>{{ label() }}</h3>
+  <!-- Both panels read the same read-only signal from the injected service instance. -->
+  <p class="count">{{ counter.count() }}</p>
+  <div class="actions">
+    <button type="button" (click)="counter.increment()">Increment shared state</button>
+    <button type="button" class="secondary" (click)="counter.reset()">Reset shared state</button>
+  </div>
+</article>

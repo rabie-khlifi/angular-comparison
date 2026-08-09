@@ -1,0 +1,113 @@
+<header class="lesson-heading">
+  <p class="eyebrow">Lesson 8</p>
+  <h1>Services vs component state</h1>
+  <p>
+    Component state belongs to one UI instance. Service state and logic can be injected into
+    multiple consumers.
+  </p>
+</header>
+
+<section aria-labelledby="local-title">
+  <h2 id="local-title">Component state: two independent instances</h2>
+  <p>
+    Increment one blue counter. Its sibling does not change because each component constructed its
+    own state.
+  </p>
+  <div class="counter-grid">
+    <app-local-counter label="Local instance A" />
+    <app-local-counter label="Local instance B" />
+  </div>
+</section>
+
+<section aria-labelledby="shared-title">
+  <h2 id="shared-title">Service state: two consumers, one instance</h2>
+  <p>
+    Increment either purple counter. Both update because both components inject the root-provided
+    service instance.
+  </p>
+  <div class="counter-grid">
+    <app-shared-counter-panel label="Service consumer A" />
+    <app-shared-counter-panel label="Service consumer B" />
+  </div>
+</section>
+
+<section aria-labelledby="ownership-title">
+  <h2 id="ownership-title">Ask who owns the responsibility</h2>
+  <div class="explanation-grid">
+    <article>
+      <h3>Keep it in the component when…</h3>
+      <ul>
+        <li>Only that component needs the value.</li>
+        <li>The state describes temporary UI details such as expanded, selected, or draft text.</li>
+        <li>Destroying and recreating the component should naturally reset it.</li>
+      </ul>
+    </article>
+    <article>
+      <h3>Move it to a service when…</h3>
+      <ul>
+        <li>Several components need the same state or behavior.</li>
+        <li>Business logic should remain independent of one template.</li>
+        <li>You need an API client, cache, authentication state, logging, or coordination.</li>
+      </ul>
+    </article>
+  </div>
+</section>
+
+<table>
+  <thead>
+    <tr>
+      <th scope="col">Concern</th>
+      <th scope="col">Component state</th>
+      <th scope="col">Service</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">Default owner</th>
+      <td>One component instance</td>
+      <td>The injector that provides it</td>
+    </tr>
+    <tr>
+      <th scope="row">Sharing</th>
+      <td>Pass through inputs/outputs or lift state</td>
+      <td>Inject the same provided instance</td>
+    </tr>
+    <tr>
+      <th scope="row">Lifetime</th>
+      <td>Component creation to destruction</td>
+      <td>Provider scope lifetime</td>
+    </tr>
+    <tr>
+      <th scope="row">Template knowledge</th>
+      <td>Usually presentation-oriented</td>
+      <td>Should not depend on a particular view</td>
+    </tr>
+    <tr>
+      <th scope="row">Typical work</th>
+      <td>Drafts, toggles, local selection</td>
+      <td>APIs, business rules, caches, shared state</td>
+    </tr>
+  </tbody>
+</table>
+
+<section class="details">
+  <h2>Dependency injection in this example</h2>
+  <ol>
+    <!-- Avoid literal Angular decorator control characters in explanatory template text. -->
+    <li>A root-provided <code>Injectable</code> registers a provider with the root injector.</li>
+    <li>Each panel calls <code>inject(SharedCounter)</code> during component construction.</li>
+    <li>Angular searches the injector hierarchy and returns the existing root instance.</li>
+    <li>Both templates track the service's same read-only count signal.</li>
+  </ol>
+  <p>
+    A service class is not automatically a singleton merely because its name ends with “Service.”
+    Provider placement determines how many instances exist. Lesson 9 explores that scope difference
+    directly.
+  </p>
+</section>
+
+<aside>
+  <strong>Avoid the “everything service”:</strong> moving all component state into root services
+  creates hidden global coupling. Start local, then lift state when real sharing or non-UI
+  responsibility requires it.
+</aside>
