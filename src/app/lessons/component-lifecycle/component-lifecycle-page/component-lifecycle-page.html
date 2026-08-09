@@ -1,0 +1,98 @@
+<header class="lesson-heading">
+  <p class="eyebrow">Lesson 13</p>
+  <h1>Classic lifecycle hooks vs modern lifecycle APIs</h1>
+  <p>
+    Change the shared input, destroy both children, and recreate them. The timeline shows when each
+    classic hook or modern reactive API runs.
+  </p>
+</header>
+
+<section class="controls" aria-labelledby="controls-title">
+  <h2 id="controls-title">Lifecycle controls</h2>
+  <div class="button-row">
+    <button type="button" (click)="changeInput()">Change input from {{ learnerName() }}</button>
+    <button type="button" (click)="toggleExamples()">
+      {{ showExamples() ? 'Destroy child components' : 'Create child components' }}
+    </button>
+    <button type="button" class="secondary" (click)="clearTimeline()">Clear timeline</button>
+  </div>
+</section>
+
+@if (showExamples()) {
+  <section class="comparison-grid" aria-label="Lifecycle implementation comparison">
+    <!-- Both children receive the same value and inject the same page-scoped timeline service. -->
+    <app-classic-lifecycle-card [learnerName]="learnerName()" />
+    <app-modern-lifecycle-card [learnerName]="learnerName()" />
+  </section>
+} @else {
+  <p class="destroyed-message">
+    Both children are destroyed. Recreate them to begin new lifecycles.
+  </p>
+}
+
+<section class="timeline" aria-labelledby="timeline-title">
+  <h2 id="timeline-title">Observed event timeline</h2>
+  <ol aria-live="polite">
+    @for (event of timeline.events(); track $index) {
+      <li>{{ event }}</li>
+    } @empty {
+      <li>No events recorded yet.</li>
+    }
+  </ol>
+</section>
+
+<section aria-labelledby="order-title">
+  <h2 id="order-title">Classic creation order</h2>
+  <ol>
+    <li>
+      <code>constructor</code>: TypeScript creates the class and Angular can inject dependencies.
+    </li>
+    <li><code>ngOnChanges</code>: Angular supplies initial input values.</li>
+    <li><code>ngOnInit</code>: one-time initialization after initial inputs.</li>
+    <li><code>ngAfterViewInit</code>: the component view and view queries are ready.</li>
+    <li><code>ngOnDestroy</code>: final cleanup immediately before removal.</li>
+  </ol>
+</section>
+
+<table>
+  <thead>
+    <tr>
+      <th scope="col">Need</th>
+      <th scope="col">Classic API</th>
+      <th scope="col">Modern option</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">React to input changes</th>
+      <td><code>ngOnChanges(SimpleChanges)</code> or input setter</td>
+      <td><code>input()</code> consumed by <code>computed()</code>/<code>effect()</code></td>
+    </tr>
+    <tr>
+      <th scope="row">One-time initialization</th>
+      <td><code>ngOnInit</code></td>
+      <td>Field initialization, constructor setup, or keep <code>ngOnInit</code></td>
+    </tr>
+    <tr>
+      <th scope="row">Query the view</th>
+      <td><code>&#64;ViewChild</code> after <code>ngAfterViewInit</code></td>
+      <td><code>viewChild()</code> signal plus a render callback</td>
+    </tr>
+    <tr>
+      <th scope="row">DOM work after rendering</th>
+      <td><code>ngAfterViewInit</code>/<code>ngAfterViewChecked</code></td>
+      <td><code>afterNextRender</code>/<code>afterRenderEffect</code></td>
+    </tr>
+    <tr>
+      <th scope="row">Cleanup</th>
+      <td><code>ngOnDestroy</code></td>
+      <td><code>DestroyRef.onDestroy()</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<aside>
+  <strong>Hooks are still valid.</strong> Modern APIs are composable alternatives, not a blanket
+  replacement. Use <code>computed()</code> for derived values, reserve <code>effect()</code> for
+  real side effects, and keep lifecycle work small so change detection remains predictable.
+</aside>

@@ -141,4 +141,13 @@ export const routes: Routes = [
         (module) => module.PipesVsMethodsPage,
       ),
   },
+  {
+    path: 'component-lifecycle',
+    title: 'Component Lifecycle | Angular Concepts Lab',
+    // Lazy loading keeps this lesson in its own JavaScript chunk until requested.
+    loadComponent: () =>
+      import('./lessons/component-lifecycle/component-lifecycle-page/component-lifecycle-page').then(
+        (module) => module.ComponentLifecyclePage,
+      ),
+  },
 ];
