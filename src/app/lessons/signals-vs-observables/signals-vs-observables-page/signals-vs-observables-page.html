@@ -1,0 +1,241 @@
+<header class="lesson-heading">
+  <p class="eyebrow">Lesson 5</p>
+  <h1>Signals vs RxJS Observables</h1>
+  <p>
+    Signals model current reactive state. Observables model sequences of values or events over time.
+  </p>
+</header>
+
+<div class="examples">
+  <section class="example signal-example" aria-labelledby="signal-search-title">
+    <p class="label">Synchronous state</p>
+    <h2 id="signal-search-title">Signal search</h2>
+    <label for="signal-search">Search immediately</label>
+    <!-- Every input event writes the signal, invalidating the computed result immediately. -->
+    <input
+      id="signal-search"
+      type="search"
+      (input)="updateSignalQuery($event)"
+      placeholder="Try Angular"
+    />
+    <p>
+      Current value: <code>{{ signalQuery() || '(empty)' }}</code>
+    </p>
+    <ul>
+      @for (item of signalResults(); track item) {
+        <li>{{ item }}</li>
+      } @empty {
+        <li>No matches</li>
+      }
+    </ul>
+  </section>
+
+  <section class="example observable-example" aria-labelledby="observable-search-title">
+    <p class="label">Events over time</p>
+    <h2 id="observable-search-title">Observable search</h2>
+    <label for="observable-search">Search after a 500 ms pause</label>
+    <!-- Every event is pushed into the Subject; RxJS decides when downstream values emit. -->
+    <input
+      id="observable-search"
+      type="search"
+      (input)="emitObservableQuery($event)"
+      placeholder="Type quickly"
+    />
+
+    <!-- `| async` owns the subscription and exposes the latest emitted value. -->
+    @if (observableResults$ | async; as result) {
+      <p>
+        Latest emission: <code>{{ result.query || '(empty)' }}</code>
+      </p>
+      <ul>
+        @for (item of result.items; track item) {
+          <li>{{ item }}</li>
+        } @empty {
+          <li>No matches</li>
+        }
+      </ul>
+    }
+  </section>
+</div>
+
+<section class="debounced-signal" aria-labelledby="debounced-signal-title">
+  <p class="label">Signal + RxJS timing</p>
+  <h2 id="debounced-signal-title">How to debounce work driven by a signal</h2>
+  <p>
+    Type in the signal input above. The source signal changes immediately, but this derived signal
+    waits until typing has stopped for 500 ms.
+  </p>
+
+  <div class="value-comparison">
+    <p>
+      Immediate source: <code>{{ signalQuery() || '(empty)' }}</code>
+    </p>
+    <p>
+      Debounced signal: <code>{{ debouncedSignalQuery() || '(empty)' }}</code>
+    </p>
+  </div>
+
+  <!-- Only this result list depends on the debounced signal, delaying its filtering work. -->
+  <ul>
+    @for (item of debouncedSignalResults(); track item) {
+      <li>{{ item }}</li>
+    } @empty {
+      <li>No matches</li>
+    }
+  </ul>
+
+  <pre><code>query = signal('');
+
+queryChanges$ = toObservable(query);
+
+debouncedQuery = toSignal(
+  queryChanges$.pipe(debounceTime(500)),
+  &#123; initialValue: '' &#125;
+);
+
+results = computed(() =&gt; expensiveSearch(debouncedQuery()));</code></pre>
+</section>
+
+<section aria-labelledby="flow-title">
+  <h2 id="flow-title">Follow each update</h2>
+  <div class="flow-grid">
+    <article>
+      <h3>Signal</h3>
+      <p><code>input event → set() → computed invalidated → template reads current value</code></p>
+      <p>There is no subscription and no debounce in this example. Reading is synchronous.</p>
+    </article>
+    <article>
+      <h3>Observable</h3>
+      <p><code>input event → next() → debounce → map → emission → AsyncPipe updates view</code></p>
+      <p>The subscriber receives values only when the pipeline emits them.</p>
+    </article>
+  </div>
+</section>
+
+<section aria-labelledby="performance-title">
+  <h2 id="performance-title">What debounce actually optimizes</h2>
+  <div class="flow-grid">
+    <article>
+      <h3>It can reduce</h3>
+      <ul>
+        <li>HTTP requests triggered by rapidly changing search text.</li>
+        <li>Expensive filtering, validation, or data processing.</li>
+        <li>Repeated writes to storage or analytics systems.</li>
+      </ul>
+    </article>
+    <article>
+      <h3>It does not reduce</h3>
+      <ul>
+        <li>Browser input events—the user still produces every event.</li>
+        <li>Writes to the immediate source signal in this pattern.</li>
+        <li>Work that still reads <code>signalQuery()</code> instead of the debounced signal.</li>
+      </ul>
+    </article>
+  </div>
+  <p>
+    Debounce intentionally adds latency. Use it for bursty input before expensive or external work,
+    not for every state update. Button clicks, toggles, and values that must respond immediately
+    usually should not be debounced.
+  </p>
+</section>
+
+<section aria-labelledby="bridge-title">
+  <h2 id="bridge-title">They can work together</h2>
+  <p>
+    <code>toSignal(observableResults$)</code> subscribes once and exposes the latest Observable
+    emission as a signal. After the debounce, the bridged signal currently contains:
+  </p>
+  <!-- This calls the signal created from the Observable instead of using AsyncPipe. -->
+  <output
+    >{{ observableResultSignal().items.length }} matching items for “{{
+      observableResultSignal().query
+    }}”</output
+  >
+</section>
+
+<table>
+  <thead>
+    <tr>
+      <th scope="col">Concern</th>
+      <th scope="col">Signal</th>
+      <th scope="col">Observable</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">Mental model</th>
+      <td>Current value</td>
+      <td>Values/events over time</td>
+    </tr>
+    <tr>
+      <th scope="row">Read/consume</th>
+      <td>Call it: <code>value()</code></td>
+      <td>Subscribe, use <code>AsyncPipe</code>, or bridge</td>
+    </tr>
+    <tr>
+      <th scope="row">Current value guaranteed?</th>
+      <td>Yes</td>
+      <td>No; it may emit later or never</td>
+    </tr>
+    <tr>
+      <th scope="row">Notification channels</th>
+      <td>Value changes</td>
+      <td><code>next</code>, <code>error</code>, and <code>complete</code></td>
+    </tr>
+    <tr>
+      <th scope="row">Cancellation</th>
+      <td>Not a stream concern</td>
+      <td>Unsubscribe; operators can cancel inner work</td>
+    </tr>
+    <tr>
+      <th scope="row">Strength</th>
+      <td>Local and derived UI state</td>
+      <td>Async/event composition with operators</td>
+    </tr>
+  </tbody>
+</table>
+
+<section class="choice" aria-labelledby="choice-title">
+  <h2 id="choice-title">Which should I choose?</h2>
+  <p>
+    <strong>Choose a signal</strong> for selection state, toggles, counters, component/service
+    state, and synchronous derivations.
+  </p>
+  <p>
+    <strong>Choose an Observable</strong> for HTTP/event streams, debouncing, cancellation, retries,
+    websockets, or combining multiple async sources.
+  </p>
+  <p>
+    <strong>Use both</strong> when RxJS manages an asynchronous workflow and a signal presents its
+    latest state to Angular UI.
+  </p>
+</section>
+
+<section aria-labelledby="lifecycle-title">
+  <h2 id="lifecycle-title">Subscription and cleanup details</h2>
+  <ul>
+    <li>
+      <code>AsyncPipe</code> subscribes for the template and automatically unsubscribes when its
+      view is destroyed or its Observable reference changes.
+    </li>
+    <li>
+      <code>toSignal()</code> subscribes immediately and normally cleans up with the component's
+      injection context.
+    </li>
+    <li>
+      <code>toObservable()</code> tracks the source signal through an Angular effect and emits after
+      the signal stabilizes. Several synchronous <code>set()</code> calls may become one latest
+      emission.
+    </li>
+    <li>
+      A manual <code>subscribe()</code> gives full control but also gives your code responsibility
+      for teardown; prefer framework-managed consumption when it fits.
+    </li>
+  </ul>
+</section>
+
+<aside>
+  <strong>Important:</strong> an Observable is not simply an “asynchronous signal,” and a signal is
+  not a replacement for RxJS. Their overlap is useful, but their core jobs and lifecycle semantics
+  differ.
+</aside>

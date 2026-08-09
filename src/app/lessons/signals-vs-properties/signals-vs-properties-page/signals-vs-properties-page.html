@@ -1,0 +1,206 @@
+<header class="lesson-heading">
+  <p class="eyebrow">Lesson 4</p>
+  <h1>Signals vs regular properties</h1>
+  <p>
+    Both store values. Signals additionally notify reactive consumers and track derived
+    dependencies.
+  </p>
+</header>
+
+<div class="examples">
+  <section class="example property-example" aria-labelledby="property-title">
+    <p class="label">Regular TypeScript</p>
+    <h2 id="property-title">Property</h2>
+
+    <!-- Regular properties are read directly: no function-call parentheses. -->
+    <p class="value">Count: {{ regularCount }}</p>
+    <p>
+      Manually stored double: <strong>{{ regularDouble }}</strong>
+    </p>
+    <p>
+      Getter-derived double: <strong>{{ regularDoubleGetter }}</strong>
+    </p>
+
+    <div class="actions">
+      <button type="button" (click)="incrementRegularCorrectly()">Increment + synchronize</button>
+      <button type="button" class="danger" (click)="incrementRegularWithoutSync()">
+        Increment but forget synchronization
+      </button>
+    </div>
+
+    <p class="hint">
+      The second button makes the manually stored double stale. The getter stays correct but is not
+      memoized.
+    </p>
+  </section>
+
+  <section class="example signal-example" aria-labelledby="signal-title">
+    <p class="label">Angular reactive state</p>
+    <h2 id="signal-title">Signal</h2>
+
+    <!-- Signals are getter functions, so reading one requires parentheses. -->
+    <p class="value">Count: {{ signalCount() }}</p>
+    <!-- Reading computed also uses parentheses because it is a read-only signal. -->
+    <p>
+      Computed double: <strong>{{ signalDouble() }}</strong>
+    </p>
+
+    <div class="actions">
+      <button type="button" (click)="incrementSignal()">Increment with update()</button>
+      <button type="button" (click)="setSignalToTen()">Replace with set(10)</button>
+    </div>
+
+    <p class="hint">
+      <code>computed()</code> cannot become stale through a forgotten assignment; its dependency is
+      tracked automatically.
+    </p>
+  </section>
+</div>
+
+<button type="button" class="reset" (click)="resetExamples()">Reset both examples</button>
+
+<section class="explanation-grid" aria-label="Detailed approach explanations">
+  <article class="explanation-card">
+    <h2>How the regular-property approach works</h2>
+    <ol>
+      <li>The class stores the raw number directly in <code>regularCount</code>.</li>
+      <li>A method assigns a new value with normal TypeScript syntax.</li>
+      <li>Angular must run change detection before the template reads the property again.</li>
+      <li>Any separately stored derived value must be updated manually on every write path.</li>
+    </ol>
+    <p>
+      The property has no knowledge of its readers. It cannot announce “I changed.” Angular may
+      still check it because another event—such as this page's button click—scheduled a template
+      check.
+    </p>
+    <h3>Good uses</h3>
+    <ul>
+      <li>Constants and configuration that do not change.</li>
+      <li>Temporary values used only inside one method.</li>
+      <li>Non-reactive implementation details that no template or derived state observes.</li>
+    </ul>
+  </article>
+
+  <article class="explanation-card signal-details">
+    <h2>How the signal approach works</h2>
+    <ol>
+      <li><code>signal(0)</code> creates a writable reactive value.</li>
+      <li>The template calls <code>signalCount()</code>, registering itself as a consumer.</li>
+      <li><code>set()</code> or <code>update()</code> changes the value and notifies consumers.</li>
+      <li><code>computed()</code> is invalidated and recalculates lazily when read again.</li>
+    </ol>
+    <p>
+      This explicit dependency graph lets Angular know which view consumed which state. It is
+      particularly useful with <code>OnPush</code> components and for derived state shared by
+      several consumers.
+    </p>
+    <h3>Good uses</h3>
+    <ul>
+      <li>Mutable state displayed by a template.</li>
+      <li>State used by one or more <code>computed()</code> values.</li>
+      <li>State exposed by a service to multiple reactive consumers.</li>
+    </ul>
+  </article>
+</section>
+
+<section aria-labelledby="derived-title">
+  <h2 id="derived-title">Three ways to represent “double”</h2>
+  <dl class="definition-list">
+    <div>
+      <dt>Copied property: <code>regularDouble</code></dt>
+      <dd>
+        Fast to read, but it duplicates state. Every code path that changes the count must also
+        change the double. The red button demonstrates the resulting stale-state bug.
+      </dd>
+    </div>
+    <div>
+      <dt>TypeScript getter: <code>regularDoubleGetter</code></dt>
+      <dd>
+        Always derives from the latest count, so it cannot drift. However, Angular can call the
+        getter during every relevant change-detection pass; Angular does not cache its result.
+      </dd>
+    </div>
+    <div>
+      <dt>Computed signal: <code>signalDouble</code></dt>
+      <dd>
+        Derives from the latest signal, records that dependency, and caches its result. It is
+        invalidated only when a dependency changes and recalculates only when a consumer reads it.
+      </dd>
+    </div>
+  </dl>
+</section>
+
+<section aria-labelledby="truth-title">
+  <h2 id="truth-title">What signals do—and do not—do</h2>
+  <table>
+    <thead>
+      <tr>
+        <th scope="col">Concern</th>
+        <th scope="col">Regular property</th>
+        <th scope="col">Signal</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <th scope="row">Read</th>
+        <td><code>count</code></td>
+        <td><code>count()</code></td>
+      </tr>
+      <tr>
+        <th scope="row">Write</th>
+        <td><code>count = 10</code></td>
+        <td><code>count.set(10)</code></td>
+      </tr>
+      <tr>
+        <th scope="row">Update from old value</th>
+        <td><code>count += 1</code></td>
+        <td><code>count.update(value =&gt; value + 1)</code></td>
+      </tr>
+      <tr>
+        <th scope="row">Notify reactive consumers</th>
+        <td>No built-in notification</td>
+        <td>Yes</td>
+      </tr>
+      <tr>
+        <th scope="row">Derived value</th>
+        <td>Getter or manual synchronization</td>
+        <td>Memoized <code>computed()</code></td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<section aria-labelledby="mistakes-title">
+  <h2 id="mistakes-title">Common signal mistakes</h2>
+  <div class="mistakes">
+    <article>
+      <h3>Forgetting parentheses when reading</h3>
+      <p><code>signalCount</code> is the signal object; <code>signalCount()</code> is its value.</p>
+    </article>
+    <article>
+      <h3>Assigning directly</h3>
+      <p>Do not write <code>signalCount = 10</code>. Use <code>signalCount.set(10)</code>.</p>
+    </article>
+    <article>
+      <h3>Mutating an object in place</h3>
+      <p>
+        Changing a property inside the current object does not call the signal setter. Return a new
+        object from <code>update()</code> so consumers are notified.
+      </p>
+    </article>
+    <article>
+      <h3>Using an effect for derived state</h3>
+      <p>
+        Prefer <code>computed()</code> for values derived from other signals. Effects are primarily
+        for synchronizing with non-reactive systems, not copying state between signals.
+      </p>
+    </article>
+  </div>
+</section>
+
+<aside>
+  <strong>Important:</strong> a regular property still updates on this page after a click because
+  Angular runs change detection for template events. Signals do not replace every property. Use
+  plain properties for non-reactive constants or temporary implementation details; use signals for
+  state whose changes should update reactive consumers.
+</aside>

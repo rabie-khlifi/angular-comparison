@@ -36,4 +36,21 @@ export const routes: Routes = [
         (module) => module.AttributeVsStructuralPage,
       ),
   },
+  {
+    path: 'signals-vs-properties',
+    title: 'Signals vs Regular Properties | Angular Concepts Lab',
+    // Each lesson remains independently lazy-loadable as the learning app grows.
+    loadComponent: () =>
+      import('./lessons/signals-vs-properties/signals-vs-properties-page/signals-vs-properties-page').then(
+        (module) => module.SignalsVsPropertiesPage,
+      ),
+  },
+  {
+    path: 'signals-vs-observables',
+    title: 'Signals vs RxJS Observables | Angular Concepts Lab',
+    loadComponent: () =>
+      import('./lessons/signals-vs-observables/signals-vs-observables-page/signals-vs-observables-page').then(
+        (module) => module.SignalsVsObservablesPage,
+      ),
+  },
 ];

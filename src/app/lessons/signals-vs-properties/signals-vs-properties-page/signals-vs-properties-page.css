@@ -1,0 +1,123 @@
+:host {
+  display: block;
+}
+.lesson-heading {
+  max-width: 50rem;
+}
+.eyebrow,
+.label {
+  color: #b91c1c;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+h1 {
+  margin-block: 0.25rem 1rem;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  line-height: 1.05;
+}
+.examples {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+  gap: 1.25rem;
+  margin-block: 2rem;
+}
+.example {
+  padding: 1.5rem;
+  border: 0.2rem solid;
+  border-radius: 1rem;
+}
+.property-example {
+  border-color: #64748b;
+  background: #f8fafc;
+}
+.signal-example {
+  border-color: #2563eb;
+  background: #eff6ff;
+}
+.value {
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem;
+  margin-block: 1rem;
+}
+button {
+  padding: 0.65rem 1rem;
+  border: 0;
+  border-radius: 0.5rem;
+  background: #172033;
+  color: white;
+  cursor: pointer;
+}
+button.danger {
+  background: #b91c1c;
+}
+.reset {
+  margin-bottom: 2rem;
+  background: #475569;
+}
+.hint {
+  min-height: 3rem;
+  color: #475569;
+}
+.explanation-grid,
+.mistakes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+  gap: 1rem;
+  margin-block: 2rem;
+}
+.explanation-card,
+.mistakes article,
+.definition-list > div {
+  padding: 1.25rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.75rem;
+  background: white;
+}
+.signal-details {
+  border-color: #60a5fa;
+  background: #f8fbff;
+}
+.explanation-card li + li {
+  margin-top: 0.45rem;
+}
+.definition-list {
+  display: grid;
+  gap: 0.8rem;
+}
+.definition-list dt {
+  margin-bottom: 0.4rem;
+  font-weight: 750;
+}
+.definition-list dd {
+  margin: 0;
+  color: #334155;
+}
+.mistakes h3 {
+  margin-top: 0;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+}
+th,
+td {
+  padding: 0.9rem;
+  border: 1px solid #cbd5e1;
+  text-align: left;
+  vertical-align: top;
+}
+thead {
+  background: #e2e8f0;
+}
+aside {
+  margin-top: 2rem;
+  padding: 1rem 1.25rem;
+  border-left: 0.3rem solid #d97706;
+  background: #fffbeb;
+}

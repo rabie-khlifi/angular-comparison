@@ -235,6 +235,155 @@ Official references:
 - [Deprecated `NgFor` API](https://angular.dev/api/common/NgFor)
 - [Deprecated `NgSwitch` API](https://angular.dev/api/common/NgSwitch)
 
+## Lesson 4: Signals vs regular properties
+
+Open [`/signals-vs-properties`](http://localhost:4200/signals-vs-properties)
+to compare two counters and their derived double values. The regular-property
+example intentionally includes a button that forgets to synchronize duplicated
+state; the signal example derives its double with `computed()`.
+
+A **regular property** is ordinary TypeScript state. Read it with `count` and
+replace it with `count = 10`. Angular can display it in a template, but the
+property itself has no mechanism for telling reactive consumers that it
+changed. Template events still cause Angular change detection, which is why a
+plain property visibly updates after a button click in this lesson.
+
+A **signal** wraps a value and notifies consumers when that value changes. Read
+it by calling `count()`, replace it with `count.set(10)`, or derive its next
+value with `count.update(value => value + 1)`. When a template reads a signal,
+Angular records that dependency and can update the relevant view when the
+signal changes.
+
+| Concern                   | Regular property                 | Signal                              |
+| ------------------------- | -------------------------------- | ----------------------------------- |
+| Create                    | `count = 0`                      | `count = signal(0)`                 |
+| Read                      | `count`                          | `count()`                           |
+| Replace                   | `count = 10`                     | `count.set(10)`                     |
+| Update from current value | `count += 1`                     | `count.update(value => value + 1)`  |
+| Change notification       | None built in                    | Notifies tracked reactive consumers |
+| Derived values            | Getter or manual synchronization | `computed()`                        |
+
+A `computed()` signal is read-only, lazy, and memoized. Angular records the
+signals actually read by its calculation, caches the result, and recalculates
+only after a tracked dependency changes and the value is requested again. This
+makes derived state harder to leave stale than a second manually synchronized
+property. A normal getter also stays logically correct, but Angular may execute
+it whenever the template is checked and its result is not memoized by Angular.
+
+Signals do not replace every variable. Prefer a regular `const`, local
+variable, or property for constants and non-reactive implementation details.
+Prefer signals for mutable state that templates, computed values, or other
+reactive consumers need to observe. When a signal contains an object or array,
+use `set()` or `update()` with a new reference instead of mutating the current
+value in place, because in-place mutation does not notify consumers.
+
+Official reference: [Angular signals overview](https://angular.dev/guide/signals).
+
+## Lesson 5: Signals vs RxJS Observables
+
+Open [`/signals-vs-observables`](http://localhost:4200/signals-vs-observables)
+to compare an immediate signal search with an RxJS search that emits after a
+500 ms pause. The page also consumes the Observable through `AsyncPipe` and
+bridges the same stream to a signal with `toSignal()`.
+
+A **signal** represents a current value. It always has something that can be
+read synchronously by calling it, and Angular tracks reactive consumers that
+read it. Writable signals use `set()` and `update()`; `computed()` derives a
+memoized current value. Signals are a natural fit for local UI state and
+synchronous state derivation.
+
+An **Observable** represents a lazy sequence of zero or more values over time.
+Consumers subscribe and can receive `next`, `error`, and `complete`
+notifications. An Observable is not required to emit immediately—or ever—and
+subscriptions can be cancelled. RxJS operators compose timing, filtering,
+mapping, retries, cancellation, and multiple asynchronous sources.
+
+| Concern                   | Signal                               | Observable                                 |
+| ------------------------- | ------------------------------------ | ------------------------------------------ |
+| Mental model              | Current reactive value               | Sequence of future values/events           |
+| Consumption               | Call `value()`                       | Subscribe, `AsyncPipe`, or bridge          |
+| Current value             | Always available                     | Not guaranteed                             |
+| Derivation                | `computed()`                         | Operators in `pipe()`                      |
+| Error/completion channels | No stream channels                   | `error` and `complete`                     |
+| Cleanup                   | Consumers are dependency-tracked     | Subscriptions must be owned and cleaned up |
+| Best fit                  | UI and synchronous application state | Async workflows and event composition      |
+
+The Observable example uses a `Subject<string>` as an input-event source.
+`startWith('')` supplies an initial emission, `debounceTime(500)` waits for a
+pause, `map()` transforms values, `distinctUntilChanged()` removes consecutive
+duplicates, and `shareReplay()` shares the most recent pipeline result. The `$`
+suffix in `observableResults$` is a naming convention, not special syntax.
+
+`AsyncPipe` subscribes from the template, exposes the latest emission, marks
+the view for checking, and unsubscribes when its view is destroyed. Prefer it
+over a manual component subscription when the value is only needed in a
+template.
+
+`toSignal(observable$, {initialValue})` subscribes immediately and returns a
+signal holding the latest emitted value. Angular automatically cleans up that
+subscription with the creating component or service. Create the bridge once
+and reuse it; repeatedly calling `toSignal()` would create repeated
+subscriptions. Conversely, `toObservable(signal)` is useful when a signal must
+enter an RxJS operator pipeline.
+
+Neither API replaces the other. Use signals for state such as selected items,
+toggles, counters, and derived view models. Use Observables for HTTP/event
+streams, debounce, retry, cancellation, websockets, and complex async
+composition. A common architecture lets RxJS control the asynchronous workflow
+and exposes its latest UI-facing result as a signal.
+
+### Debouncing work driven by a signal
+
+A signal represents the current value and updates immediately by design. It
+does not have a built-in `debounceTime()` method because debounce describes the
+timing of a sequence of changes. The recommended composition is to keep the
+source signal immediate, turn its changes into an Observable, apply RxJS timing
+operators, and expose the latest result as another signal:
+
+```ts
+readonly query = signal('');
+
+private readonly queryChanges$ = toObservable(this.query);
+
+readonly debouncedQuery = toSignal(
+  this.queryChanges$.pipe(debounceTime(500), distinctUntilChanged()),
+  { initialValue: '' },
+);
+
+readonly results = computed(() => expensiveSearch(this.debouncedQuery()));
+```
+
+`query()` remains immediately correct for the input and any UI that needs the
+latest text. `debouncedQuery()` changes only after 500 ms without another
+source emission. Expensive filtering or a request pipeline should depend on
+the debounced value; work that continues reading `query()` is still immediate
+and receives no debounce benefit.
+
+Debouncing can reduce expensive searches, HTTP requests, async validation,
+analytics events, or storage writes during a burst. It does not prevent browser
+input events or writes to the immediate source signal. It also deliberately
+adds latency, so it is usually wrong for buttons, toggles, navigation, or state
+that must respond immediately.
+
+For HTTP search, the Observable side will often continue with `switchMap()`
+after `debounceTime()`. `switchMap()` unsubscribes from the previous inner
+request when a newer query arrives, preventing an older response from winning
+the race. The final UI-facing result can remain an Observable consumed by
+`AsyncPipe`, or it can be bridged once with `toSignal()`.
+
+Avoid implementing derived debounced state by copying values in a plain
+`effect()` unless you specifically need custom scheduling behavior and handle
+cleanup correctly. RxJS already provides tested timing, cancellation, error,
+and teardown semantics. Also avoid repeatedly calling `toSignal()` for the same
+stream because each call creates a subscription; store and reuse the returned
+signal.
+
+Official references:
+
+- [Angular RxJS and signals interoperability](https://angular.dev/ecosystem/rxjs-interop)
+- [RxJS Observable guide](https://rxjs.dev/guide/observable)
+- [RxJS operators guide](https://rxjs.dev/guide/operators)
+
 ## Standalone, NgModule, and hybrid applications
 
 Standalone APIs and NgModules are two ways to organize modern Angular code.
