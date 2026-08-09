@@ -1,0 +1,82 @@
+:host {
+  display: block;
+}
+.lesson-heading {
+  max-width: 52rem;
+}
+.eyebrow {
+  color: #b91c1c;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+h1 {
+  margin-block: 0.25rem 1rem;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  line-height: 1.05;
+}
+.examples {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+  gap: 1.25rem;
+  margin-block: 2rem;
+}
+.examples section {
+  display: flex;
+  flex-direction: column;
+}
+.examples app-readonly-rating,
+.examples app-editable-rating {
+  flex: 1;
+}
+.parent-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+button {
+  padding: 0.6rem 0.9rem;
+  border: 0;
+  border-radius: 0.5rem;
+  background: #172033;
+  color: white;
+  cursor: pointer;
+}
+section {
+  margin-block: 2.5rem;
+}
+pre {
+  overflow-x: auto;
+  padding: 1.25rem;
+  border-radius: 0.7rem;
+  background: #172033;
+  color: #e2e8f0;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+}
+th,
+td {
+  padding: 0.9rem;
+  border: 1px solid #cbd5e1;
+  text-align: left;
+  vertical-align: top;
+}
+thead {
+  background: #e2e8f0;
+}
+.choice {
+  padding: 1.25rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.7rem;
+  background: white;
+}
+aside {
+  margin-top: 2rem;
+  padding: 1rem 1.25rem;
+  border-left: 0.3rem solid #d97706;
+  background: #fffbeb;
+}

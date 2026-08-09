@@ -53,4 +53,12 @@ export const routes: Routes = [
         (module) => module.SignalsVsObservablesPage,
       ),
   },
+  {
+    path: 'inputs-vs-model-inputs',
+    title: 'Inputs vs Model Inputs | Angular Concepts Lab',
+    loadComponent: () =>
+      import('./lessons/inputs-vs-model-inputs/inputs-vs-model-inputs-page/inputs-vs-model-inputs-page').then(
+        (module) => module.InputsVsModelInputsPage,
+      ),
+  },
 ];

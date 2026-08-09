@@ -1,0 +1,7 @@
+<article class="rating-card">
+  <p class="label">input()</p>
+  <h2>{{ label() }}</h2>
+  <!-- An InputSignal is read by calling it, just like other signals. -->
+  <p class="stars" [attr.aria-label]="rating() + ' out of 5 stars'">{{ stars() }}</p>
+  <p>The child can read this value but cannot write it.</p>
+</article>

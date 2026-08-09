@@ -1,0 +1,40 @@
+:host {
+  display: block;
+}
+.rating-card {
+  height: 100%;
+  box-sizing: border-box;
+  padding: 1.5rem;
+  border: 0.2rem solid #7c3aed;
+  border-radius: 1rem;
+  background: #f5f3ff;
+}
+.label {
+  color: #6d28d9;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+.stars {
+  color: #b45309;
+  font-size: 2rem;
+  letter-spacing: 0.15rem;
+}
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+button {
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 0;
+  border-radius: 50%;
+  background: #6d28d9;
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}

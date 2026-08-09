@@ -1,0 +1,105 @@
+<header class="lesson-heading">
+  <p class="eyebrow">Lesson 6</p>
+  <h1>Inputs vs model inputs</h1>
+  <p>
+    <code>input()</code> gives a child read-only data from its parent. <code>model()</code> creates
+    a writable input designed for two-way binding.
+  </p>
+</header>
+
+<div class="examples">
+  <section aria-labelledby="input-example-title">
+    <h2 id="input-example-title">One-way input</h2>
+    <!-- Invoke the parent's signal because a normal property binding passes its current value. -->
+    <app-readonly-rating [rating]="readonlyRating()" label="Parent-controlled rating" />
+    <div class="parent-controls">
+      <span>Parent controls:</span>
+      <button type="button" (click)="lowerReadonlyRating()">Lower</button>
+      <button type="button" (click)="raiseReadonlyRating()">Raise</button>
+    </div>
+    <p>
+      Parent value: <strong>{{ readonlyRating() }}</strong>
+    </p>
+  </section>
+
+  <section aria-labelledby="model-example-title">
+    <h2 id="model-example-title">Two-way model input</h2>
+    <!-- Pass the writable signal itself—without ()—to the two-way model binding. -->
+    <app-editable-rating [(rating)]="editableRating" />
+    <p>
+      Parent value changes from the child's buttons: <strong>{{ editableRating() }}</strong>
+    </p>
+  </section>
+</div>
+
+<section aria-labelledby="syntax-title">
+  <h2 id="syntax-title">What banana-in-a-box expands to</h2>
+  <p>
+    The model declaration <code>rating = model.required&lt;number&gt;()</code> creates an input
+    named <code>rating</code> and an output named <code>ratingChange</code>.
+  </p>
+  <pre><code>&lt;app-editable-rating [(rating)]="editableRating" /&gt;
+
+is shorthand for the input + output pair:
+
+&lt;app-editable-rating
+  [rating]="editableRating()"
+  (ratingChange)="editableRating.set($event)"
+/&gt;</code></pre>
+</section>
+
+<table>
+  <thead>
+    <tr>
+      <th scope="col">Concern</th>
+      <th scope="col"><code>input()</code></th>
+      <th scope="col"><code>model()</code></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">Direction</th>
+      <td>Parent → child</td>
+      <td>Parent ↔ child</td>
+    </tr>
+    <tr>
+      <th scope="row">Child can write?</th>
+      <td>No; InputSignal is read-only</td>
+      <td>Yes; ModelSignal has <code>set()</code>/<code>update()</code></td>
+    </tr>
+    <tr>
+      <th scope="row">Implicit output?</th>
+      <td>No</td>
+      <td>Yes: input name + <code>Change</code></td>
+    </tr>
+    <tr>
+      <th scope="row">Input transforms?</th>
+      <td>Supported</td>
+      <td>Not supported</td>
+    </tr>
+    <tr>
+      <th scope="row">Typical use</th>
+      <td>Configuration and display data</td>
+      <td>A value the child is responsible for editing</td>
+    </tr>
+  </tbody>
+</table>
+
+<section class="choice">
+  <h2>Choosing correctly</h2>
+  <p>
+    Prefer <code>input()</code> by default because one-way data flow makes ownership explicit. Use
+    <code>model()</code> when editing the value is genuinely part of the child's public purpose,
+    such as a custom form control, slider, date picker, or reusable counter.
+  </p>
+  <p>
+    Do not use <code>model()</code> merely so a child can change arbitrary parent state. For actions
+    rather than value synchronization—save, delete, opened, submitted—use a named output, which is
+    the next lesson.
+  </p>
+</section>
+
+<aside>
+  <strong>Important:</strong> two-way binding does not create shared global state. It is syntax
+  connecting one child input/output pair to one parent expression or writable signal.
+</aside>

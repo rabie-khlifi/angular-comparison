@@ -1,0 +1,11 @@
+<article class="rating-card">
+  <p class="label">model()</p>
+  <h2>Two-way rating</h2>
+  <p class="stars" [attr.aria-label]="rating() + ' out of 5 stars'">{{ stars() }}</p>
+  <div class="actions">
+    <!-- These child buttons write the model and automatically notify the parent. -->
+    <button type="button" (click)="decrease()" [disabled]="rating() === 1">−</button>
+    <span>{{ rating() }} / 5</span>
+    <button type="button" (click)="increase()" [disabled]="rating() === 5">+</button>
+  </div>
+</article>
