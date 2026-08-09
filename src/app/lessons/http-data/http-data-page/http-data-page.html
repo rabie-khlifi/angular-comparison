@@ -1,0 +1,95 @@
+<header class="lesson-heading">
+  <p class="eyebrow">Lesson 19</p>
+  <h1>HttpClient Observables vs httpResource signals</h1>
+  <p>
+    Both examples query the same mock endpoint. Their main difference is how request lifecycle and
+    UI state are represented.
+  </p>
+</header>
+
+<div class="grid">
+  <section class="classic">
+    <p class="label">Classic HttpClient + AsyncPipe</p>
+    <h2>Cold Observable request</h2>
+    <input
+      aria-label="Classic lesson search"
+      type="search"
+      placeholder="Filter lessons"
+      (input)="searchClassic($event)"
+    />
+    <!-- AsyncPipe starts the request, exposes emissions, and unsubscribes automatically. -->
+    @if (classicLessons$ | async; as lessons) {
+      <ul>
+        @for (lesson of lessons; track lesson.id) {
+          <li>{{ lesson.title }}</li>
+        } @empty {
+          <li>No matches</li>
+        }
+      </ul>
+    }
+  </section>
+
+  <section class="modern">
+    <p class="label">Modern httpResource()</p>
+    <h2>Signal-based request state</h2>
+    <input
+      aria-label="Resource lesson search"
+      type="search"
+      placeholder="Filter lessons"
+      (input)="searchResource($event)"
+    />
+    @if (lessonsResource.isLoading()) {
+      <p>Loading…</p>
+    }
+    @if (lessonsResource.error()) {
+      <p class="error">Request failed.</p>
+    }
+    <!-- Guard value() with hasValue() because reading value during an error throws. -->
+    @if (lessonsResource.hasValue()) {
+      <ul>
+        @for (lesson of lessonsResource.value(); track lesson.id) {
+          <li>{{ lesson.title }}</li>
+        } @empty {
+          <li>No matches</li>
+        }
+      </ul>
+    }
+  </section>
+</div>
+
+<table>
+  <thead>
+    <tr>
+      <th>Concern</th>
+      <th>HttpClient</th>
+      <th>httpResource</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Result</th>
+      <td>Cold Observable</td>
+      <td>Resource with state signals</td>
+    </tr>
+    <tr>
+      <th>Starts</th>
+      <td>On subscription</td>
+      <td>Eagerly from reactive request</td>
+    </tr>
+    <tr>
+      <th>Changing request</th>
+      <td>Build/switch Observable pipeline</td>
+      <td>Change a tracked signal</td>
+    </tr>
+    <tr>
+      <th>Best use</th>
+      <td>Reads, mutations, event streams</td>
+      <td>Reactive HTTP reads</td>
+    </tr>
+  </tbody>
+</table>
+
+<aside>
+  <strong>Use HttpClient for mutations.</strong> POST, PUT, PATCH, and DELETE are imperative
+  actions. Use httpResource primarily for GET-like reactive reads.
+</aside>

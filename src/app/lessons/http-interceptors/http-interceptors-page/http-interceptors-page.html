@@ -1,0 +1,78 @@
+<header class="lesson-heading">
+  <p class="eyebrow">Lesson 20</p>
+  <h1>Class-based vs functional HTTP interceptors</h1>
+  <p>
+    Every demo request crosses both interceptor styles before the in-memory learning backend
+    responds.
+  </p>
+</header>
+
+<section class="controls">
+  <button type="button" (click)="sendSuccessfulRequest()">Send successful request</button>
+  <button type="button" class="danger" (click)="sendFailingRequest()">
+    Send 503 error request
+  </button>
+  @if (loading()) {
+    <p>Request in progress…</p>
+  }
+</section>
+
+<section class="result" aria-live="polite">
+  <h2>Backend observations</h2>
+  @if (result(); as response) {
+    <p>{{ response.message }}</p>
+    <p>
+      Classic interceptor header: <strong>{{ response.classicHeader }}</strong>
+    </p>
+    <p>
+      Functional interceptor header: <strong>{{ response.functionalHeader }}</strong>
+    </p>
+  } @else {
+    <p>{{ errorMessage() }}</p>
+  }
+</section>
+
+<div class="grid">
+  <article>
+    <h2>Classic interceptor</h2>
+    <pre><code>&#64;Injectable()
+class AuthInterceptor implements HttpInterceptor &#123;
+  intercept(req, next) &#123;
+    return next.handle(req.clone(&#123; ... &#125;));
+  &#125;
+&#125;</code></pre>
+    <p>
+      Registered through the multi-provider token and enabled with
+      <code>withInterceptorsFromDi()</code>.
+    </p>
+  </article>
+  <article>
+    <h2>Functional interceptor</h2>
+    <pre><code>const authInterceptor: HttpInterceptorFn =
+  (req, next) =&gt; next(req.clone(&#123; ... &#125;));</code></pre>
+    <p>
+      Registered explicitly with <code>withInterceptors()</code>; preferred for predictable ordering
+      and simpler composition.
+    </p>
+  </article>
+</div>
+
+<section class="details">
+  <h2>Good interceptor responsibilities</h2>
+  <ul>
+    <li>Attach authentication, correlation, locale, or version headers.</li>
+    <li>Centralize logging, timing, caching policy, or consistent error translation.</li>
+    <li>
+      Use <code>HttpContextToken</code> for per-request metadata that should not reach the backend.
+    </li>
+  </ul>
+  <p>
+    Do not hide feature-specific recovery in a global interceptor. A component or service should
+    decide whether to show a fallback, retry, redirect, or let the error continue.
+  </p>
+</section>
+
+<aside>
+  <strong>Requests are immutable.</strong> Clone before modifying headers or options. Interceptors
+  can run again during retries, so avoid mutating request/response bodies in place.
+</aside>

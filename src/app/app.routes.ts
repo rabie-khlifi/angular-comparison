@@ -195,4 +195,20 @@ export const routes: Routes = [
         (module) => module.ROUTE_CONTROL_ROUTES,
       ),
   },
+  {
+    path: 'http-data',
+    title: 'HttpClient vs httpResource | Angular Concepts Lab',
+    loadComponent: () =>
+      import('./lessons/http-data/http-data-page/http-data-page').then(
+        (module) => module.HttpDataPage,
+      ),
+  },
+  {
+    path: 'http-interceptors',
+    title: 'HTTP Interceptors | Angular Concepts Lab',
+    loadComponent: () =>
+      import('./lessons/http-interceptors/http-interceptors-page/http-interceptors-page').then(
+        (module) => module.HttpInterceptorsPage,
+      ),
+  },
 ];

@@ -39,9 +39,61 @@ left uncluttered so that the example remains easy to read.
 16. View queries, content projection, ng-template, and ng-container
 17. Route parameters vs query parameters; RouterLink vs Router.navigate
 18. Route guards vs data resolvers
+19. HttpClient Observables vs httpResource signals
+20. Class-based vs functional HTTP interceptors
 
 Each completed lesson will receive its own short section here explaining what
 the APIs do, their main differences, and when to choose each one.
+
+## Lesson 19: HttpClient Observables vs httpResource signals
+
+Open [`/http-data`](http://localhost:4200/http-data). Both searches call the
+same in-memory `/api/lessons` endpoint through Angular's real HTTP pipeline.
+
+Classic `HttpClient` methods return cold Observables: no request starts until a
+consumer subscribes. `AsyncPipe` is the traditional safe template consumer
+because it subscribes, updates the view, and cleans up automatically. Services
+should normally own endpoint URLs and domain request methods.
+
+Modern `httpResource()` represents an HTTP read through `value`, `isLoading`,
+`error`, `statusCode`, and other signals. Its request computation is eager and
+reactive: when a signal read by that computation changes, stale work is
+cancelled and a new request begins. Check `hasValue()` before reading `value()`
+because `value()` throws while the resource is in an error state.
+
+| Concern     | HttpClient                    | httpResource                       |
+| ----------- | ----------------------------- | ---------------------------------- |
+| Result      | Cold Observable               | Resource with state signals        |
+| Execution   | Starts on subscription        | Eager reactive request             |
+| Reads       | Excellent                     | Excellent for signal-driven reads  |
+| Mutations   | Use for POST/PUT/PATCH/DELETE | Do not use as mutation replacement |
+| Composition | Full RxJS operator ecosystem  | Signal/resource state APIs         |
+
+## Lesson 20: Class-based vs functional HTTP interceptors
+
+Open [`/http-interceptors`](http://localhost:4200/http-interceptors). Successful
+requests show headers added by both interceptor styles; the failing request
+returns a mock 503 so error and loading-state handling are visible.
+
+Older Angular applications commonly define an injectable class implementing
+`HttpInterceptor`, register it under the `HTTP_INTERCEPTORS` multi-provider,
+and enable DI interceptors with `withInterceptorsFromDi()`. This remains
+supported for existing code.
+
+Modern Angular prefers `HttpInterceptorFn` functions configured in explicit
+order through `withInterceptors()`. Functional interceptors can call `inject()`
+inside their injection context and generally have more predictable composition.
+
+Requests and responses are mostly immutable. Clone a request before adding
+headers. Good cross-cutting responsibilities include authentication,
+correlation IDs, locale, timing, caching policy, and consistent error
+translation. Feature code should still decide user-facing recovery, while
+backend authorization must never depend on an interceptor or client guard.
+
+The project uses a final documented mock interceptor instead of an external
+server. It handles only `/api/lessons` and `/api/interceptor-demo`; unrelated
+requests continue to the configured backend. This keeps both lessons runnable
+during development, tests, and SSR.
 
 ## Lesson 17: Route parameters, query parameters, and navigation
 
