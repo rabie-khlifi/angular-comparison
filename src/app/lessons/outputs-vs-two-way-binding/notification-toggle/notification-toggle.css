@@ -1,0 +1,24 @@
+:host {
+  display: block;
+}
+.card {
+  height: 100%;
+  box-sizing: border-box;
+  padding: 1.5rem;
+  border: 0.2rem solid #7c3aed;
+  border-radius: 1rem;
+  background: #f5f3ff;
+}
+.label {
+  color: #6d28d9;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+button {
+  padding: 0.65rem 1rem;
+  border: 0;
+  border-radius: 999px;
+  background: #6d28d9;
+  color: white;
+  cursor: pointer;
+}

@@ -1,0 +1,143 @@
+:host {
+  display: block;
+}
+.lesson-heading {
+  max-width: 52rem;
+}
+.eyebrow {
+  color: #b91c1c;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+h1 {
+  margin-block: 0.25rem 1rem;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  line-height: 1.05;
+}
+.examples,
+.syntax-grid,
+.binding-grid,
+.version-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+  gap: 1.25rem;
+  margin-block: 2rem;
+}
+.version-grid > article {
+  padding: 1.25rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.7rem;
+  background: white;
+}
+.version-grid app-notification-toggle,
+.version-grid app-legacy-notification-toggle {
+  display: block;
+  margin-block: 1rem;
+}
+.binding-grid article,
+.syntax-grid article,
+.details {
+  padding: 1.25rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.7rem;
+  background: white;
+}
+.binding-grid .number {
+  display: grid;
+  width: 2rem;
+  height: 2rem;
+  margin: 0;
+  place-items: center;
+  border-radius: 50%;
+  background: #172033;
+  color: white;
+  font-weight: 800;
+}
+.binding-result {
+  min-height: 2.5rem;
+  padding: 0.7rem;
+  border-radius: 0.5rem;
+  background: #eff6ff;
+}
+.binding-grid button {
+  margin: 0.25rem;
+  padding: 0.6rem 0.9rem;
+  border: 0;
+  border-radius: 0.5rem;
+  background: #1d4ed8;
+  color: white;
+  cursor: pointer;
+}
+.binding-grid button.secondary {
+  background: #475569;
+}
+.binding-grid button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.binding-grid label {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-weight: 700;
+}
+.binding-grid input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.65rem;
+  border: 1px solid #94a3b8;
+  border-radius: 0.45rem;
+  font: inherit;
+}
+.text-binding-comparison {
+  display: grid;
+  gap: 0.55rem;
+}
+.text-binding-comparison p {
+  margin-block: 0 0.8rem;
+}
+.examples section {
+  display: flex;
+  flex-direction: column;
+}
+.examples app-profile-editor,
+.examples app-notification-toggle {
+  flex: 1;
+}
+output {
+  display: block;
+  margin-top: 1rem;
+  padding: 0.8rem;
+  border-radius: 0.5rem;
+  background: #e0f2fe;
+}
+section {
+  margin-block: 2.5rem;
+}
+pre {
+  overflow-x: auto;
+  padding: 1.25rem;
+  border-radius: 0.7rem;
+  background: #172033;
+  color: #e2e8f0;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+}
+th,
+td {
+  padding: 0.9rem;
+  border: 1px solid #cbd5e1;
+  text-align: left;
+  vertical-align: top;
+}
+thead {
+  background: #e2e8f0;
+}
+aside {
+  margin-top: 2rem;
+  padding: 1rem 1.25rem;
+  border-left: 0.3rem solid #d97706;
+  background: #fffbeb;
+}

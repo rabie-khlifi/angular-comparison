@@ -61,4 +61,12 @@ export const routes: Routes = [
         (module) => module.InputsVsModelInputsPage,
       ),
   },
+  {
+    path: 'outputs-vs-two-way-binding',
+    title: 'Outputs vs Two-Way Binding | Angular Concepts Lab',
+    loadComponent: () =>
+      import('./lessons/outputs-vs-two-way-binding/outputs-vs-two-way-binding-page/outputs-vs-two-way-binding-page').then(
+        (module) => module.OutputsVsTwoWayBindingPage,
+      ),
+  },
 ];

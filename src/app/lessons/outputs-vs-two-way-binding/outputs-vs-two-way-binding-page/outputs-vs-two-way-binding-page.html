@@ -1,0 +1,281 @@
+<header class="lesson-heading">
+  <p class="eyebrow">Lesson 7</p>
+  <h1>Angular data binding, outputs, and two-way binding</h1>
+  <p>
+    Angular has four fundamental binding forms. Outputs power custom event binding, while two-way
+    binding combines a value binding with a change event.
+  </p>
+</header>
+
+<section aria-labelledby="four-bindings-title">
+  <h2 id="four-bindings-title">The four data-binding types</h2>
+  <div class="binding-grid">
+    <article>
+      <p class="number">1</p>
+      <h3>Interpolation: <code>double curly braces</code></h3>
+      <!-- Angular evaluates the signal and converts its result to display text. -->
+      <p class="binding-result">{{ interpolationMessage() }}</p>
+      <p>
+        <strong>Direction:</strong> component → view. Best for text content and string
+        interpolation.
+      </p>
+    </article>
+
+    <article>
+      <p class="number">2</p>
+      <h3>Property binding: <code>[property]="expression"</code></h3>
+      <!-- This assigns a boolean to the button DOM object's disabled property. -->
+      <button type="button" [disabled]="propertyDisabled()">Target button</button>
+      <button type="button" class="secondary" (click)="togglePropertyBinding()">
+        {{ propertyDisabled() ? 'Enable' : 'Disable' }} target
+      </button>
+      <p>
+        <strong>Direction:</strong> component → view. Preserves types rather than converting every
+        value to text.
+      </p>
+    </article>
+
+    <article>
+      <p class="number">3</p>
+      <h3>Event binding: <code>(event)="statement"</code></h3>
+      <!-- $event is the native MouseEvent produced by this button. -->
+      <button type="button" (click)="recordEvent($event)">Emit native click</button>
+      <p>
+        Handled clicks: <strong>{{ eventCount() }}</strong>
+      </p>
+      <p><strong>Direction:</strong> view → component. Responds to native or custom events.</p>
+    </article>
+
+    <article>
+      <p class="number">4</p>
+      <h3>Two-way binding: <code>[(target)]="state"</code></h3>
+      <div class="text-binding-comparison">
+        <!-- Pass the writable signal itself to the child's model input, without (). -->
+        <app-model-text-input [(value)]="signalLearnerName" />
+        <p>
+          Signal parent: <strong>{{ signalLearnerName() }}</strong>
+        </p>
+
+        <label for="learner-name">Classic NgModel text input</label>
+        <!-- NgModel writes into the input and assigns user changes to the normal property. -->
+        <input id="learner-name" [(ngModel)]="learnerName" />
+        <p>
+          Property parent: <strong>{{ learnerName }}</strong>
+        </p>
+      </div>
+      <p><strong>Direction:</strong> component ↔ view. Combines property and event binding.</p>
+    </article>
+  </div>
+</section>
+
+<section aria-labelledby="text-model-expansion-title">
+  <h2 id="text-model-expansion-title">Modern model() text-input expansion</h2>
+  <pre><code>&lt;app-model-text-input
+  [(value)]="signalLearnerName"
+/&gt;
+
+is conceptually:
+
+&lt;app-model-text-input
+  [value]="signalLearnerName()"
+  (valueChange)="signalLearnerName.set($event)"
+/&gt;</code></pre>
+  <p>
+    Inside the child, <code>value = model('')</code> supplies both sides of this contract. The child
+    renders a native text input and calls <code>value.set(...)</code> for every input event.
+  </p>
+</section>
+
+<section aria-labelledby="property-attribute-title">
+  <h2 id="property-attribute-title">Property binding is not always attribute binding</h2>
+  <p>
+    HTML attributes initialize elements, while DOM properties represent their live state.
+    <code>[disabled]="false"</code> sets the boolean DOM property to false. The literal attribute
+    <code>disabled="false"</code> still disables a button because that boolean attribute's presence
+    matters, not its text.
+  </p>
+  <ul>
+    <li><code>[value]</code>, <code>[disabled]</code>, and component inputs bind properties.</li>
+    <li><code>[attr.aria-label]</code> explicitly writes an HTML attribute.</li>
+    <li>
+      <code>[class.active]</code> and <code>[style.width.px]</code> are specialized class/style
+      bindings.
+    </li>
+  </ul>
+</section>
+
+<div class="examples">
+  <section aria-labelledby="output-title">
+    <h2 id="output-title">Custom output event</h2>
+    <!-- Parentheses listen to custom outputs; $event contains the emitted payload. -->
+    <app-profile-editor (saved)="handleSaved($event)" (cancelled)="handleCancelled()" />
+    <output>{{ eventMessage() }}</output>
+  </section>
+
+  <section aria-labelledby="two-way-title">
+    <h2 id="two-way-title">Component two-way binding</h2>
+    <!-- Pass the writable signal itself so model() can synchronize it. -->
+    <app-notification-toggle [(enabled)]="notificationsEnabled" />
+    <p>
+      Parent state: <strong>{{ notificationsEnabled() ? 'enabled' : 'disabled' }}</strong>
+    </p>
+  </section>
+</div>
+
+<section aria-labelledby="old-new-two-way-title">
+  <h2 id="old-new-two-way-title">Component two-way binding: old and new APIs</h2>
+  <p>
+    The parent template can use the same banana-in-a-box syntax for both. The difference is how the
+    child declares and updates the contract.
+  </p>
+
+  <div class="version-grid">
+    <article>
+      <h3>Modern: model signal</h3>
+      <!-- A writable signal is passed without (), allowing Angular to synchronize it. -->
+      <app-notification-toggle [(enabled)]="notificationsEnabled" />
+      <p>
+        Modern parent signal: <strong>{{ notificationsEnabled() }}</strong>
+      </p>
+      <pre><code>enabled = model(false);
+
+toggle() &#123;
+  this.enabled.update(value =&gt; !value);
+&#125;</code></pre>
+    </article>
+
+    <article>
+      <h3>Classic: decorator input/output pair</h3>
+      <!-- A normal property is assigned whenever enabledChange emits. -->
+      <app-legacy-notification-toggle [(enabled)]="legacyNotificationsEnabled" />
+      <p>
+        Classic parent property: <strong>{{ legacyNotificationsEnabled }}</strong>
+      </p>
+      <pre><code>&#64;Input() enabled = false;
+&#64;Output() enabledChange = new EventEmitter&lt;boolean&gt;();
+
+toggle() &#123;
+  this.enabled = !this.enabled;
+  this.enabledChange.emit(this.enabled);
+&#125;</code></pre>
+    </article>
+  </div>
+</section>
+
+<section aria-labelledby="legacy-expansion-title">
+  <h2 id="legacy-expansion-title">The classic syntax expansion</h2>
+  <pre><code>&lt;app-legacy-notification-toggle
+  [(enabled)]="legacyNotificationsEnabled"
+/&gt;
+
+is shorthand for:
+
+&lt;app-legacy-notification-toggle
+  [enabled]="legacyNotificationsEnabled"
+  (enabledChange)="legacyNotificationsEnabled = $event"
+/&gt;</code></pre>
+  <p>
+    The naming convention is the mechanism: an input called <code>enabled</code> plus an output
+    called <code>enabledChange</code>. Angular recognizes the pair and allows
+    <code>[(enabled)]</code>. <code>model()</code> did not invent a different runtime contract; it
+    provides the same contract with less declaration and a writable signal API.
+  </p>
+</section>
+
+<section aria-labelledby="syntax-title">
+  <h2 id="syntax-title">How outputs and two-way binding fit the four types</h2>
+  <div class="syntax-grid">
+    <article>
+      <h3>Output event</h3>
+      <pre><code>&lt;app-profile-editor
+  (saved)="handleSaved($event)"
+/&gt;</code></pre>
+      <p>
+        This is event binding. The parent runs arbitrary logic; nothing is assigned automatically.
+      </p>
+    </article>
+    <article>
+      <h3>Two-way value</h3>
+      <pre><code>&lt;app-notification-toggle
+  [(enabled)]="notificationsEnabled"
+/&gt;</code></pre>
+      <p>
+        Angular connects <code>[enabled]</code> and <code>(enabledChange)</code> as one
+        synchronization contract.
+      </p>
+    </article>
+  </div>
+</section>
+
+<section aria-labelledby="ngmodel-expansion-title">
+  <h2 id="ngmodel-expansion-title">What [(ngModel)] combines</h2>
+  <pre><code>&lt;input [(ngModel)]="learnerName" /&gt;
+
+is shorthand for:
+
+&lt;input
+  [ngModel]="learnerName"
+  (ngModelChange)="learnerName = $event"
+/&gt;</code></pre>
+  <p>
+    <code>NgModel</code> is a directive supplied by <code>FormsModule</code>. Native inputs do not
+    have a built-in <code>ngModel</code> property; the directive supplies the input and output that
+    create this contract.
+  </p>
+</section>
+
+<table>
+  <thead>
+    <tr>
+      <th scope="col">Concern</th>
+      <th scope="col">Output</th>
+      <th scope="col">Two-way binding</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">Meaning</th>
+      <td>An event happened</td>
+      <td>One value changed</td>
+    </tr>
+    <tr>
+      <th scope="row">Child API</th>
+      <td><code>output&lt;T&gt;()</code></td>
+      <td><code>model&lt;T&gt;()</code> or input/output pair</td>
+    </tr>
+    <tr>
+      <th scope="row">Syntax</th>
+      <td><code>(saved)="handler($event)"</code></td>
+      <td><code>[(enabled)]="state"</code></td>
+    </tr>
+    <tr>
+      <th scope="row">Parent behavior</th>
+      <td>Explicit handler decides</td>
+      <td>Assignment/signal synchronization</td>
+    </tr>
+    <tr>
+      <th scope="row">Best names</th>
+      <td>saved, closed, selected</td>
+      <td>enabled, value, rating</td>
+    </tr>
+  </tbody>
+</table>
+
+<section class="details">
+  <h2>Output details worth remembering</h2>
+  <ul>
+    <li>Angular custom outputs do not bubble through the DOM like native click events.</li>
+    <li>Output names are case-sensitive; avoid collisions with native DOM events.</li>
+    <li>Prefer <code>saved</code>, not <code>onSaved</code>.</li>
+    <li><code>output()</code> returns an <code>OutputEmitterRef</code>, not an RxJS Observable.</li>
+    <li>
+      The legacy <code>@Output() new EventEmitter()</code> remains supported but is not preferred
+      for new code.
+    </li>
+  </ul>
+</section>
+
+<aside>
+  <strong>Rule of thumb:</strong> curly braces display text, square brackets push a value,
+  parentheses listen for an event, and combined <code>[()]</code> synchronizes a value both ways.
+</aside>

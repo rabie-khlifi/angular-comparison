@@ -1,0 +1,17 @@
+:host {
+  display: block;
+}
+label {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-weight: 700;
+}
+input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.65rem;
+  border: 1px solid #2563eb;
+  border-radius: 0.45rem;
+  font: inherit;
+  background: #eff6ff;
+}

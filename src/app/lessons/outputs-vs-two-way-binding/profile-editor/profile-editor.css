@@ -1,0 +1,49 @@
+:host {
+  display: block;
+}
+.card {
+  height: 100%;
+  box-sizing: border-box;
+  padding: 1.5rem;
+  border: 0.2rem solid #2563eb;
+  border-radius: 1rem;
+  background: #eff6ff;
+}
+.label {
+  color: #1d4ed8;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+label {
+  display: block;
+  margin-bottom: 0.35rem;
+  font-weight: 700;
+}
+input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0.65rem;
+  border: 1px solid #94a3b8;
+  border-radius: 0.45rem;
+  font: inherit;
+}
+.actions {
+  display: flex;
+  gap: 0.7rem;
+  margin-top: 1rem;
+}
+button {
+  padding: 0.6rem 0.9rem;
+  border: 0;
+  border-radius: 0.5rem;
+  background: #1d4ed8;
+  color: white;
+  cursor: pointer;
+}
+button.secondary {
+  background: #475569;
+}
+button:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}

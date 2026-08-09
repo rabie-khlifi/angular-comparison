@@ -1,0 +1,12 @@
+<article class="card">
+  <p class="label">[(two-way binding)]</p>
+  <h2>Notification state</h2>
+  <p>
+    Notifications are <strong>{{ enabled() ? 'enabled' : 'disabled' }}</strong
+    >.
+  </p>
+  <!-- This changes the model value, causing the parent's connected state to synchronize. -->
+  <button type="button" role="switch" [attr.aria-checked]="enabled()" (click)="toggle()">
+    Turn {{ enabled() ? 'off' : 'on' }}
+  </button>
+</article>

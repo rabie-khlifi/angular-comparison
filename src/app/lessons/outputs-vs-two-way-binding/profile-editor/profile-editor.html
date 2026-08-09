@@ -1,0 +1,11 @@
+<article class="card">
+  <p class="label">output()</p>
+  <h2>Profile actions</h2>
+  <label for="profile-name">Draft name</label>
+  <input id="profile-name" [value]="draftName()" (input)="updateDraft($event)" />
+  <div class="actions">
+    <!-- These buttons emit semantic events; they do not synchronize one named value. -->
+    <button type="button" (click)="save()" [disabled]="!draftName().trim()">Save</button>
+    <button type="button" class="secondary" (click)="cancel()">Cancel</button>
+  </div>
+</article>

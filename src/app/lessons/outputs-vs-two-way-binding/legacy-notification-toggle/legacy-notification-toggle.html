@@ -1,0 +1,12 @@
+<article class="card">
+  <p class="label">Legacy @Input + @Output</p>
+  <h2>Classic two-way state</h2>
+  <!-- enabled is a normal boolean property, so it is read without (). -->
+  <p>
+    Notifications are <strong>{{ enabled ? 'enabled' : 'disabled' }}</strong
+    >.
+  </p>
+  <button type="button" role="switch" [attr.aria-checked]="enabled" (click)="toggle()">
+    Turn {{ enabled ? 'off' : 'on' }}
+  </button>
+</article>
