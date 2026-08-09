@@ -1,0 +1,11 @@
+<article class="scope-card">
+  <p class="label">Component provider</p>
+  <h3>{{ label() }}</h3>
+  <p>
+    Service instance ID: <strong>{{ counter.instanceId }}</strong>
+  </p>
+  <p>
+    Count: <strong>{{ counter.count() }}</strong>
+  </p>
+  <button type="button" (click)="counter.increment()">Increment only this instance</button>
+</article>

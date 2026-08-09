@@ -1,0 +1,108 @@
+<header class="lesson-heading">
+  <p class="eyebrow">Lesson 9</p>
+  <h1>Component providers vs providedIn: root</h1>
+  <p>
+    The injection token can be identical while provider placement changes instance identity,
+    sharing, and lifetime.
+  </p>
+</header>
+
+<section aria-labelledby="root-title">
+  <h2 id="root-title">Root scope: one shared fallback instance</h2>
+  <p>Both blue consumers display the same instance ID. Incrementing either updates both counts.</p>
+  <div class="panel-grid">
+    <app-root-scope-panel label="Root consumer A" />
+    <app-root-scope-panel label="Root consumer B" />
+  </div>
+</section>
+
+<section aria-labelledby="component-title">
+  <h2 id="component-title">Component scope: one instance per host subtree</h2>
+  <p>
+    Each purple component has a different ID and isolated count because each host declares its own
+    provider.
+  </p>
+  <div class="panel-grid">
+    <app-component-scope-panel label="Component scope A" />
+    <app-component-scope-panel label="Component scope B" />
+  </div>
+</section>
+
+<section aria-labelledby="resolution-title">
+  <h2 id="resolution-title">How Angular resolves inject(ScopedCounter)</h2>
+  <ol class="resolution">
+    <li><strong>Start at the requesting element.</strong> Check its ElementInjector.</li>
+    <li><strong>Walk through parent elements.</strong> The first matching token wins.</li>
+    <li>
+      <strong>Search environment injectors.</strong> Route and root providers are checked when no
+      element provider matched.
+    </li>
+    <li>
+      <strong>Fail if absent.</strong> Angular throws a provider-not-found error unless the
+      injection is optional.
+    </li>
+  </ol>
+  <p>
+    The purple component finds its own provider at step 1, so the root instance is shadowed. The
+    blue component reaches the root environment provider at step 3.
+  </p>
+</section>
+
+<table>
+  <thead>
+    <tr>
+      <th scope="col">Concern</th>
+      <th scope="col">providedIn: root</th>
+      <th scope="col">Component providers</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">Instances</th>
+      <td>One per root environment injector</td>
+      <td>One per component instance declaring the provider</td>
+    </tr>
+    <tr>
+      <th scope="row">Available to</th>
+      <td>Application-wide unless shadowed</td>
+      <td>Component and descendant subtree</td>
+    </tr>
+    <tr>
+      <th scope="row">Lifetime</th>
+      <td>Usually application lifetime</td>
+      <td>Destroyed with providing component</td>
+    </tr>
+    <tr>
+      <th scope="row">Typical use</th>
+      <td>API clients, auth, global configuration, shared stores</td>
+      <td>Isolated editors, wizard state, per-widget coordination</td>
+    </tr>
+    <tr>
+      <th scope="row">Tree-shakable automatic provider</th>
+      <td>Yes</td>
+      <td>Manual provider entry</td>
+    </tr>
+  </tbody>
+</table>
+
+<section class="details">
+  <h2>Provider syntax</h2>
+  <pre><code>// Automatic root provider on the service
+providedIn: 'root'
+
+// Manual provider on a component
+providers: [ScopedCounter]
+
+// The shorthand represents an object using:
+provide: ScopedCounter
+useClass: ScopedCounter</code></pre>
+  <p>
+    A component provider can override even a root-provided service. Descendant components inherit
+    that nearer instance unless they declare another override.
+  </p>
+</section>
+
+<aside>
+  <strong>Do not add a service to every component's providers array by habit.</strong> That silently
+  creates multiple instances and often explains why “shared” state does not stay shared.
+</aside>

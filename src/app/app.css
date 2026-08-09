@@ -5,8 +5,9 @@
   color: #172033;
   font-family: system-ui, sans-serif;
 }
-
 .site-header {
+  position: relative;
+  z-index: 10;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -14,29 +15,66 @@
   padding: 1rem clamp(1rem, 5vw, 4rem);
   background: #172033;
 }
-
 .site-header a {
   color: #dbeafe;
   text-decoration: none;
 }
-
-nav {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
 .brand {
   font-size: 1.1rem;
   font-weight: 700;
 }
-.site-header .active-link {
-  color: #fff;
-  text-decoration: underline;
-  text-underline-offset: 0.35rem;
+.lesson-menu {
+  position: relative;
+  color: white;
+}
+.lesson-menu summary {
+  padding: 0.6rem 0.85rem;
+  border: 1px solid #64748b;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  user-select: none;
+}
+.lesson-menu[open] summary {
+  background: #334155;
+}
+.lesson-menu nav {
+  position: absolute;
+  top: calc(100% + 0.55rem);
+  right: 0;
+  display: grid;
+  width: min(22rem, calc(100vw - 2rem));
+  max-height: min(70vh, 34rem);
+  overflow-y: auto;
+  padding: 0.5rem;
+  border: 1px solid #64748b;
+  border-radius: 0.7rem;
+  background: #172033;
+  box-shadow: 0 1rem 2rem rgb(15 23 42 / 25%);
+}
+.lesson-menu nav a {
+  padding: 0.65rem 0.75rem;
+  border-radius: 0.4rem;
+}
+.lesson-menu nav a:hover,
+.lesson-menu nav a:focus-visible {
+  background: #334155;
+  color: white;
+}
+.lesson-menu nav .active-link {
+  background: #1d4ed8;
+  color: white;
+  font-weight: 700;
 }
 .page-shell {
   width: min(70rem, calc(100% - 2rem));
   margin-inline: auto;
   padding-block: 2rem 4rem;
+}
+@media (max-width: 34rem) {
+  .site-header {
+    align-items: flex-start;
+  }
+  .brand {
+    max-width: 9rem;
+  }
 }

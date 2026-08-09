@@ -77,4 +77,12 @@ export const routes: Routes = [
         (module) => module.ServicesVsComponentStatePage,
       ),
   },
+  {
+    path: 'provider-scopes',
+    title: 'Provider Scopes | Angular Concepts Lab',
+    loadComponent: () =>
+      import('./lessons/provider-scopes/provider-scopes-page/provider-scopes-page').then(
+        (module) => module.ProviderScopesPage,
+      ),
+  },
 ];

@@ -1,33 +1,39 @@
 <!-- RouterLink performs client-side navigation without reloading the browser page. -->
 <header class="site-header">
   <a class="brand" routerLink="/">Angular Concepts Lab</a>
-  <nav aria-label="Lesson navigation">
-    <!-- RouterLinkActive adds this class while the lesson route is active. -->
-    <a routerLink="/standalone-vs-ngmodule" routerLinkActive="active-link">
-      1. Standalone vs NgModule
-    </a>
-    <a routerLink="/components-vs-directives" routerLinkActive="active-link">
-      2. Components vs Directives
-    </a>
-    <a routerLink="/attribute-vs-structural" routerLinkActive="active-link">
-      3. Attribute vs Structural
-    </a>
-    <a routerLink="/signals-vs-properties" routerLinkActive="active-link">
-      4. Signals vs Properties
-    </a>
-    <a routerLink="/signals-vs-observables" routerLinkActive="active-link">
-      5. Signals vs Observables
-    </a>
-    <a routerLink="/inputs-vs-model-inputs" routerLinkActive="active-link">
-      6. Inputs vs Model Inputs
-    </a>
-    <a routerLink="/outputs-vs-two-way-binding" routerLinkActive="active-link">
-      7. Outputs vs Two-Way Binding
-    </a>
-    <a routerLink="/services-vs-component-state" routerLinkActive="active-link">
-      8. Services vs Component State
-    </a>
-  </nav>
+
+  <!-- Native details/summary provides keyboard interaction and open/closed state without JS. -->
+  <details class="lesson-menu">
+    <summary>Choose a lesson</summary>
+    <nav aria-label="Lesson navigation">
+      <!-- RouterLinkActive marks whichever lesson route is currently active. -->
+      <a routerLink="/standalone-vs-ngmodule" routerLinkActive="active-link"
+        >1. Standalone vs NgModule</a
+      >
+      <a routerLink="/components-vs-directives" routerLinkActive="active-link"
+        >2. Components vs Directives</a
+      >
+      <a routerLink="/attribute-vs-structural" routerLinkActive="active-link"
+        >3. Attribute vs Structural</a
+      >
+      <a routerLink="/signals-vs-properties" routerLinkActive="active-link"
+        >4. Signals vs Properties</a
+      >
+      <a routerLink="/signals-vs-observables" routerLinkActive="active-link"
+        >5. Signals vs Observables</a
+      >
+      <a routerLink="/inputs-vs-model-inputs" routerLinkActive="active-link"
+        >6. Inputs vs Model Inputs</a
+      >
+      <a routerLink="/outputs-vs-two-way-binding" routerLinkActive="active-link"
+        >7. Data Binding and Outputs</a
+      >
+      <a routerLink="/services-vs-component-state" routerLinkActive="active-link"
+        >8. Services vs Component State</a
+      >
+      <a routerLink="/provider-scopes" routerLinkActive="active-link">9. Provider Scopes</a>
+    </nav>
+  </details>
 </header>
 
 <main class="page-shell">
