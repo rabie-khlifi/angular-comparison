@@ -1,0 +1,50 @@
+<header class="lesson-heading">
+  <p class="eyebrow">Lesson 26</p>
+  <h1>Accessible Angular components</h1>
+  <p>Try every control using only Tab, Shift+Tab, Enter, and Space.</p>
+</header>
+
+<div class="grid">
+  <article>
+    <h2>Prefer native semantics</h2>
+    <!-- details/summary already supplies focus, keyboard activation, and expanded semantics. -->
+    <details>
+      <summary>Why native HTML first?</summary>
+      <p>The browser implements behavior that a custom div would need to recreate and test.</p>
+    </details>
+    <!-- A real label creates a programmatic accessible name for the input. -->
+    <label for="display-name">Display name</label>
+    <input id="display-name" autocomplete="name" />
+    <button type="button" (click)="save()">Save preferences</button>
+    <!-- role=status gives this polite live-region behavior. -->
+    <p role="status">{{ statusMessage() }}</p>
+  </article>
+
+  <article>
+    <h2>Custom disclosure done correctly</h2>
+    <!-- Use a button, not a clickable div; aria-expanded mirrors the actual panel state. -->
+    <button type="button" [attr.aria-expanded]="customOpen()" aria-controls="custom-panel" (click)="toggleCustom()">
+      Advanced explanation
+    </button>
+    @if (customOpen()) {
+      <div id="custom-panel">
+        <p>Angular controls rendering; native button semantics provide keyboard activation.</p>
+      </div>
+    }
+  </article>
+</div>
+
+<section class="details">
+  <h2>Accessibility is more than ARIA</h2>
+  <ul>
+    <li>Use semantic elements and logical heading order before adding roles.</li>
+    <li>Give inputs labels, images meaningful alt text, and icon-only buttons accessible names.</li>
+    <li>Preserve visible focus, keyboard order, sufficient contrast, zoom, and reduced-motion preferences.</li>
+    <li>Use ARIA only to communicate semantics native HTML cannot express; incorrect ARIA can make a control worse.</li>
+    <li>Test with keyboard, automated checks, and at least one screen reader—automation cannot judge everything.</li>
+  </ul>
+</section>
+
+<aside>
+  <strong>Old mistake vs modern practice:</strong> a clickable <code>&lt;div&gt;</code> needs tabindex, keyboard handlers, role, and state attributes. A native <code>&lt;button&gt;</code> already has the correct semantics. For complex widgets such as tabs, listboxes, trees, or grids, install and use Angular Aria rather than hand-writing their keyboard model.
+</aside>

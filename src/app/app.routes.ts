@@ -258,6 +258,30 @@ export const routes: Routes = [
         './lessons/testing-fundamentals/testing-fundamentals-page/testing-fundamentals-page'
       ).then((module) => module.TestingFundamentalsPage),
   },
+  {
+    path: 'state-management',
+    title: 'Angular State Management | Angular Concepts Lab',
+    loadComponent: () =>
+      import('./lessons/state-management/state-management-page/state-management-page').then(
+        (module) => module.StateManagementPage,
+      ),
+  },
+  {
+    path: 'accessibility',
+    title: 'Angular Accessibility | Angular Concepts Lab',
+    loadComponent: () =>
+      import('./lessons/accessibility/accessibility-page/accessibility-page').then(
+        (module) => module.AccessibilityPage,
+      ),
+  },
+  {
+    path: 'performance-debugging',
+    title: 'Angular Performance and Debugging | Angular Concepts Lab',
+    loadComponent: () =>
+      import(
+        './lessons/performance-debugging/performance-debugging-page/performance-debugging-page'
+      ).then((module) => module.PerformanceDebuggingPage),
+  },
 ];
 
 // Reusing one loader keeps all three strategy routes pointed at the same educational component.

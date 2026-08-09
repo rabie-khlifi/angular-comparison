@@ -1,0 +1,8 @@
+:host { display: block; }
+.lesson-heading, .details, article, aside { padding: 1rem; margin-bottom: 1rem; border: 1px solid #cbd5e1; border-radius: .75rem; }
+.eyebrow { color: #7c3aed; font-weight: 700; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); gap: 1rem; }
+label { display: block; margin-top: 1rem; font-weight: 700; }
+input, button, summary { padding: .65rem; margin: .35rem 0; font: inherit; }
+:focus-visible { outline: 3px solid #7c3aed; outline-offset: 3px; }
+

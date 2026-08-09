@@ -1,0 +1,39 @@
+<header class="lesson-heading">
+  <p class="eyebrow">Lesson 25</p>
+  <h1>RxJS service vs signal store-style service vs NgRx</h1>
+  <p>Both working stores implement the same todo behavior with different reactive primitives.</p>
+</header>
+
+<div class="grid">
+  <article>
+    <h2>Classic RxJS service</h2>
+    <input #classicInput placeholder="Todo text" (keydown.enter)="addClassic(classicInput)" />
+    <button type="button" (click)="addClassic(classicInput)">Add</button>
+    <p>Remaining: {{ classicStore.remaining$ | async }}</p>
+    <ul>
+      @for (item of classicStore.items$ | async; track item.id) {
+        <li><button type="button" (click)="classicStore.toggle(item.id)">{{ item.done ? 'Undo' : 'Done' }}</button> {{ item.label }}</li>
+      } @empty { <li>No todos yet.</li> }
+    </ul>
+  </article>
+
+  <article>
+    <h2>Modern signal store-style service</h2>
+    <input #modernInput placeholder="Todo text" (keydown.enter)="addModern(modernInput)" />
+    <button type="button" (click)="addModern(modernInput)">Add</button>
+    <p>Remaining: {{ signalStore.remaining() }}</p>
+    <ul>
+      @for (item of signalStore.items(); track item.id) {
+        <li><button type="button" (click)="signalStore.toggle(item.id)">{{ item.done ? 'Undo' : 'Done' }}</button> {{ item.label }}</li>
+      } @empty { <li>No todos yet.</li> }
+    </ul>
+  </article>
+</div>
+
+<section class="details">
+  <h2>Where NgRx fits</h2>
+  <p><strong>RxJS service:</strong> lightweight and flexible, but teams must invent conventions for actions, immutable updates, selectors, and debugging.</p>
+  <p><strong>Signal store-style service:</strong> ideal for local or moderately shared synchronous state. Private writable signals plus public readonly/computed signals create a small predictable API.</p>
+  <p><strong>NgRx Store:</strong> adds formal actions, reducers, selectors, effects, and excellent tooling for large cross-feature workflows. <strong>NgRx SignalStore</strong> offers structured signal-based stores. Neither NgRx package is installed here, so this lesson explains them honestly instead of presenting fake imports.</p>
+  <p>Start with the smallest design that meets actual coordination and debugging needs. Store libraries do not replace server state, HTTP caching policy, or good feature boundaries.</p>
+</section>

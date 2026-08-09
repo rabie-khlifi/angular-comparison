@@ -1,0 +1,7 @@
+:host { display: block; }
+.lesson-heading, .details, article { padding: 1rem; margin-bottom: 1rem; border: 1px solid #cbd5e1; border-radius: .75rem; }
+.eyebrow { color: #7c3aed; font-weight: 700; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); gap: 1rem; }
+input, button { padding: .6rem; margin: .2rem; font: inherit; }
+li { margin: .4rem 0; }
+

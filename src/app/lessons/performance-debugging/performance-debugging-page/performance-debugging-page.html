@@ -1,0 +1,45 @@
+<header class="lesson-heading">
+  <p class="eyebrow">Lesson 27</p>
+  <h1>Performance and debugging</h1>
+  <p>Filter 200 records while comparing repeated template computation with memoized derived state.</p>
+</header>
+
+<label>Filter products <input (input)="updateQuery($event)" placeholder="Try 19" /></label>
+<div class="grid">
+  <article>
+    <h2>Classic template method</h2>
+    @if (classicFiltered(); as result) {
+      <p>Method calls observed: {{ result.runs }}</p>
+      <ul>@for (product of result.items; track product.id) { <li>{{ product.name }}</li> }</ul>
+    }
+  </article>
+  <article>
+    <h2>Modern computed signal</h2>
+    @if (modernFiltered(); as result) {
+      <p>Computed recalculations: {{ result.runs }}</p>
+      <ul>@for (product of result.items; track product.id) { <li>{{ product.name }}</li> }</ul>
+    }
+  </article>
+</div>
+
+<section class="details">
+  <h2>Defer work that is not initially needed</h2>
+  <button #loadDetails type="button">Load deferred diagnostics</button>
+  @defer (on interaction(loadDetails)) {
+    <app-heavy-performance-details />
+  } @placeholder {
+    <p>The diagnostics component is deferred until the button is activated.</p>
+  }
+</section>
+
+<section class="details">
+  <h2>Old and modern optimization tools</h2>
+  <ul>
+    <li><strong>Then:</strong> <code>ChangeDetectionStrategy.OnPush</code>, pure pipes, memoized selectors, lazy modules, and <code>*ngFor trackBy</code>.</li>
+    <li><strong>Now:</strong> signals precisely mark consumers, <code>computed()</code> memoizes derivations, <code>&#64;for track</code> preserves DOM identity, standalone routes lazy-load, and <code>&#64;defer</code> splits optional UI.</li>
+    <li>OnPush remains useful; signals complement it rather than replace it.</li>
+  </ul>
+  <p>Measure before optimizing. Use Angular DevTools profiler, browser Performance/Network panels, bundle budgets, source maps in appropriate environments, and production error telemetry. Watch long tasks, duplicate requests, layout shifts, memory growth, and oversized lazy chunks.</p>
+</section>
+
+<aside><strong>Important:</strong> the counters are teaching instrumentation, not a benchmark. Development mode performs extra checks. Profile an optimized production build on realistic hardware and data before making architecture decisions.</aside>

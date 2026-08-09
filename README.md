@@ -45,9 +45,60 @@ left uncluttered so that the example remains easy to read.
 22. Signal Forms vs classic Reactive Forms async validation
 23. CSR vs SSR vs SSG and hydration
 24. Modern zoneless vs classic Angular testing patterns
+25. RxJS service vs signal store-style service vs NgRx
+26. Native semantics vs accessible custom controls
+27. Classic vs modern performance and debugging techniques
 
 Each completed lesson will receive its own short section here explaining what
 the APIs do, their main differences, and when to choose each one.
+
+## Lesson 25: Choosing a state-management approach
+
+Open [`/state-management`](http://localhost:4200/state-management). Two todo
+stores provide identical behavior. The classic service keeps private state in
+a `BehaviorSubject`, exposes Observables, derives selectors with RxJS
+operators, and uses `AsyncPipe`. The modern service keeps a private writable
+signal, exposes it with `asReadonly()`, and derives memoized state with
+`computed()`.
+
+A small service is often enough. NgRx Store becomes valuable when many teams
+and features need formal actions, reducers, effects, selectors, time-travel
+debugging, and strict conventions. NgRx SignalStore provides structured
+signal-based stores. NgRx is intentionally not imported because it is not a
+dependency of this project; the page explains the decision boundary without
+misrepresenting a homemade service as the NgRx library.
+
+## Lesson 26: Accessibility fundamentals
+
+Open [`/accessibility`](http://localhost:4200/accessibility) and operate it
+with a keyboard. The native `details`/`summary`, labeled input, and button
+already include essential semantics and keyboard behavior. The custom
+disclosure still uses a real button and synchronizes `aria-expanded` with the
+rendered panel. A live status region announces a save without stealing focus.
+
+Older code often made a `div` clickable and added only a click handler. That
+excludes keyboard and assistive-technology users unless focus, roles, keys,
+names, and state are all reimplemented. Prefer native HTML; use ARIA only for
+missing semantics. For complex tabs, listboxes, menus, trees, and grids,
+Angular Aria can supply their difficult keyboard/focus behavior after the
+package is installed. Always combine automated tests with keyboard, zoom,
+contrast, reduced-motion, and screen-reader checks.
+
+## Lesson 27: Performance and debugging
+
+Open [`/performance-debugging`](http://localhost:4200/performance-debugging).
+Filtering demonstrates a classic template method, which can repeat during
+checks, beside a memoized `computed()` signal that recalculates only when its
+dependencies change. `@for track product.id` preserves DOM identity, while
+`@defer` keeps optional diagnostics out of the initial rendering path.
+
+The pre-signals toolkit remains relevant: OnPush, pure pipes, memoized
+selectors, lazy NgModules/routes, and `*ngFor trackBy`. Modern signals,
+`computed`, standalone lazy routes, `@for track`, and `@defer` make those
+intentions more direct. Measure an optimized production build before changing
+architecture. Angular DevTools, browser Performance/Network panels, bundle
+budgets, source maps, and production telemetry help locate actual change
+detection, network, layout, memory, and bundle problems.
 
 ## Lesson 21: Advanced RxJS operators and signal interop
 
