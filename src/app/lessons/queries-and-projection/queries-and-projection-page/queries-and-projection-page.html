@@ -1,0 +1,94 @@
+<header class="lesson-heading">
+  <p class="eyebrow">Lesson 16</p>
+  <h1>View queries, content projection, and template containers</h1>
+  <p>
+    Queries locate existing view objects; projection and template containers decide where and when
+    markup renders.
+  </p>
+</header>
+
+<section>
+  <h2><code>&#64;ViewChild</code> vs <code>viewChild()</code></h2>
+  <p>A view query searches markup owned by the component's own template.</p>
+  <div class="grid"><app-classic-view-query /><app-modern-view-query /></div>
+</section>
+
+<section>
+  <h2><code>&#64;ContentChild</code> vs <code>contentChild()</code></h2>
+  <p>
+    A content query searches markup supplied by the parent and placed using <code>ng-content</code>.
+  </p>
+  <div class="grid">
+    <app-classic-projection-card>
+      <h3 card-title #projectedHeading>Classic projected heading</h3>
+      <p>This enters the default slot.</p>
+      <span card-actions>Classic action slot</span>
+    </app-classic-projection-card>
+    <app-modern-projection-card>
+      <h3 card-title #projectedHeading>Modern projected heading</h3>
+      <p>This enters the default slot.</p>
+      <span card-actions>Modern action slot</span>
+    </app-modern-projection-card>
+  </div>
+</section>
+
+<section class="template-demo">
+  <h2><code>ng-template</code> vs <code>ng-container</code></h2>
+  <button type="button" (click)="toggleTemplate()">
+    Show {{ showDetails() ? 'summary' : 'details' }}
+  </button>
+
+  <!-- ng-template describes dormant content and does not render by itself. -->
+  <ng-template #summaryTemplate><p>Summary template: compact information.</p></ng-template>
+  <ng-template #detailsTemplate
+    ><p>Details template: expanded information selected at runtime.</p></ng-template
+  >
+
+  <!-- ng-container hosts the outlet directive but adds no element to the rendered DOM. -->
+  <ng-container [ngTemplateOutlet]="showDetails() ? detailsTemplate : summaryTemplate" />
+</section>
+
+<table>
+  <thead>
+    <tr>
+      <th>Concept</th>
+      <th>Classic</th>
+      <th>Modern</th>
+      <th>Purpose</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>View query</th>
+      <td><code>&#64;ViewChild</code></td>
+      <td><code>viewChild()</code></td>
+      <td>Search owned view</td>
+    </tr>
+    <tr>
+      <th>Content query</th>
+      <td><code>&#64;ContentChild</code></td>
+      <td><code>contentChild()</code></td>
+      <td>Search projected content</td>
+    </tr>
+    <tr>
+      <th>Projection</th>
+      <td colspan="2"><code>ng-content</code></td>
+      <td>Place parent markup</td>
+    </tr>
+    <tr>
+      <th>Dormant view</th>
+      <td colspan="2"><code>ng-template</code></td>
+      <td>Describe later content</td>
+    </tr>
+    <tr>
+      <th>DOM-less group</th>
+      <td colspan="2"><code>ng-container</code></td>
+      <td>Group template behavior</td>
+    </tr>
+  </tbody>
+</table>
+
+<aside>
+  <strong>Prefer binding for communication.</strong> Use queries for focus, measurement, component
+  APIs, or third-party integration—not to bypass inputs and outputs.
+</aside>

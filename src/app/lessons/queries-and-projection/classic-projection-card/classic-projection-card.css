@@ -1,0 +1,30 @@
+:host {
+  display: block;
+}
+.card {
+  padding: 1.25rem;
+  border: 0.2rem solid;
+  border-radius: 0.8rem;
+}
+.classic {
+  border-color: #c2410c;
+  background: #fff7ed;
+}
+.label {
+  color: #9a3412;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+header,
+footer {
+  padding: 0.5rem;
+  background: white;
+}
+button {
+  padding: 0.6rem;
+  border: 0;
+  border-radius: 0.4rem;
+  color: white;
+  background: #c2410c;
+  cursor: pointer;
+}

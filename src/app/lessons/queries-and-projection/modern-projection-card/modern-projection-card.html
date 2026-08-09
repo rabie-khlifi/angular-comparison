@@ -1,0 +1,8 @@
+<article class="card modern">
+  <p class="label">Modern contentChild()</p>
+  <header><ng-content select="[card-title]" /></header>
+  <div><ng-content /></div>
+  <footer><ng-content select="[card-actions]" /></footer>
+  <button type="button" (click)="inspectHeading()">Inspect projected heading</button>
+  <p>Result: {{ observedHeading() }}</p>
+</article>

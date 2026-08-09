@@ -1,0 +1,28 @@
+/* In ShadowDom mode, :host is a native Shadow DOM selector for the custom host element. */
+:host {
+  display: block;
+  height: 100%;
+}
+
+/* The browser—not Angular's generated attributes—contains this rule in the shadow root. */
+.demo-card {
+  height: 100%;
+  box-sizing: border-box;
+  padding: 1.25rem;
+  border: 0.2rem solid #2563eb;
+  border-radius: 0.8rem;
+  background: #eff6ff;
+  color: #172033;
+  font-family: system-ui, sans-serif;
+}
+
+.inside-only {
+  color: #1d4ed8;
+  font-weight: 800;
+}
+
+.label {
+  color: #1d4ed8;
+  font-weight: 800;
+  text-transform: uppercase;
+}

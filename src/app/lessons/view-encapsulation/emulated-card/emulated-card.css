@@ -1,0 +1,27 @@
+/* :host targets the custom <app-emulated-card> host element. */
+:host {
+  display: block;
+  height: 100%;
+}
+
+/* Angular rewrites this selector with generated attributes instead of using Shadow DOM. */
+.demo-card {
+  height: 100%;
+  box-sizing: border-box;
+  padding: 1.25rem;
+  border: 0.2rem solid #059669;
+  border-radius: 0.8rem;
+  background: #ecfdf5;
+}
+
+/* This rule cannot style a matching element outside this component's template. */
+.inside-only {
+  color: #047857;
+  font-weight: 800;
+}
+
+.label {
+  color: #047857;
+  font-weight: 800;
+  text-transform: uppercase;
+}

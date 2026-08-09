@@ -1,0 +1,9 @@
+<article class="card classic">
+  <p class="label">Classic &#64;ContentChild</p>
+  <!-- select creates named projection slots; the plain slot receives everything else. -->
+  <header><ng-content select="[card-title]" /></header>
+  <div><ng-content /></div>
+  <footer><ng-content select="[card-actions]" /></footer>
+  <button type="button" (click)="inspectHeading()">Inspect projected heading</button>
+  <p>Result: {{ observedHeading }}</p>
+</article>

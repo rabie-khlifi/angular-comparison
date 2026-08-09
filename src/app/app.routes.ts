@@ -158,4 +158,20 @@ export const routes: Routes = [
         (module) => module.ChangeDetectionPage,
       ),
   },
+  {
+    path: 'view-encapsulation',
+    title: 'View Encapsulation | Angular Concepts Lab',
+    loadComponent: () =>
+      import('./lessons/view-encapsulation/view-encapsulation-page/view-encapsulation-page').then(
+        (module) => module.ViewEncapsulationPage,
+      ),
+  },
+  {
+    path: 'queries-and-projection',
+    title: 'Queries and Content Projection | Angular Concepts Lab',
+    loadComponent: () =>
+      import('./lessons/queries-and-projection/queries-and-projection-page/queries-and-projection-page').then(
+        (module) => module.QueriesAndProjectionPage,
+      ),
+  },
 ];

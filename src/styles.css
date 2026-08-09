@@ -1,3 +1,8 @@
 /* You can add global styles to this file, and also import other style files */
 
 @import 'tailwindcss';
+/* Lesson 15: global document CSS can enter Emulated views but not a native shadow root. */
+.global-theme {
+  color: #be123c;
+  text-decoration: underline;
+}

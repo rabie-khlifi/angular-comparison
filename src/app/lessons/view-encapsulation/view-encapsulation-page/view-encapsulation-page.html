@@ -1,0 +1,97 @@
+<header class="lesson-heading">
+  <p class="eyebrow">Lesson 15</p>
+  <h1>Emulated vs None vs Shadow DOM encapsulation</h1>
+  <p>
+    All three components have their own stylesheet. Encapsulation controls whether those rules are
+    rewritten, global, or placed inside a native browser shadow root.
+  </p>
+</header>
+
+<!-- This class also appears inside two children, demonstrating whether page CSS can enter them. -->
+<p class="global-theme outside-example">
+  Page-level <code>.global-theme</code> rule: it can enter Emulated, but not Shadow DOM.
+</p>
+
+<!-- NoneCard intentionally defines this class globally, so this outside element becomes purple. -->
+<p class="none-leak-target">
+  I live outside NoneCard, but its unscoped stylesheet still styles me.
+</p>
+
+<section class="comparison-grid" aria-label="View encapsulation comparison">
+  <app-emulated-card />
+  <app-none-card />
+  <app-shadow-card />
+</section>
+
+<section class="details">
+  <h2>Inspect the DOM in browser DevTools</h2>
+  <ul>
+    <li>
+      <strong>Emulated:</strong> Angular adds generated attributes to elements and rewrites
+      component selectors to include those attributes.
+    </li>
+    <li><strong>None:</strong> the stylesheet appears as normal global CSS with no scoping.</li>
+    <li>
+      <strong>ShadowDom:</strong> the custom element contains a real
+      <code>#shadow-root</code> managed by the browser.
+    </li>
+  </ul>
+</section>
+
+<table>
+  <thead>
+    <tr>
+      <th scope="col">Concern</th>
+      <th scope="col">Emulated</th>
+      <th scope="col">None</th>
+      <th scope="col">ShadowDom</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">Component CSS leaks out?</th>
+      <td>No, under normal selectors</td>
+      <td>Yes</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <th scope="row">Global CSS enters?</th>
+      <td>Yes</td>
+      <td>Yes</td>
+      <td>Normally no; inherited values and CSS custom properties can cross</td>
+    </tr>
+    <tr>
+      <th scope="row">Mechanism</th>
+      <td>Angular-generated attributes</td>
+      <td>Ordinary global CSS</td>
+      <td>Native browser shadow root</td>
+    </tr>
+    <tr>
+      <th scope="row">Common choice</th>
+      <td>Default application components</td>
+      <td>Intentional global/theme styles</td>
+      <td>Strongly isolated reusable elements</td>
+    </tr>
+  </tbody>
+</table>
+
+<section class="details">
+  <h2>Before signals and today</h2>
+  <p>
+    View encapsulation has no dependency on signals. Older NgModule components and modern standalone
+    components use the same <code>ViewEncapsulation</code> enum and the same CSS boundaries. Signals
+    decide when reactive state updates a view; encapsulation decides where CSS selectors are allowed
+    to match.
+  </p>
+  <p>
+    <code>:host</code> styles the component host. <code>:host-context()</code> reacts to an ancestor
+    context but is discouraged for new design systems. Avoid <code>::ng-deep</code>; it breaks
+    encapsulation and remains only for backwards compatibility.
+  </p>
+</section>
+
+<aside>
+  <strong>Default recommendation:</strong> keep Emulated for ordinary application components. Use
+  None only for intentionally global rules with carefully prefixed selectors. Choose Shadow DOM when
+  native isolation is worth its theming, projection, testing, and third-party integration tradeoffs.
+</aside>

@@ -1,0 +1,8 @@
+<article class="query-card classic">
+  <p class="label">Classic &#64;ViewChild</p>
+  <h2>Query the component's own view</h2>
+  <label for="classic-query-input">Learner name</label>
+  <!-- The template reference is located by @ViewChild after view initialization. -->
+  <input #nameInput id="classic-query-input" value="Ada" />
+  <button type="button" (click)="focusInput()">Focus with &#64;ViewChild</button>
+</article>

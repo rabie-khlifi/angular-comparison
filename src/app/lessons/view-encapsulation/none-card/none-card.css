@@ -1,0 +1,29 @@
+/* Prefix most None-mode selectors to reduce accidental collisions in a real application. */
+app-none-card {
+  display: block;
+  height: 100%;
+}
+
+app-none-card .none-demo-card {
+  height: 100%;
+  box-sizing: border-box;
+  padding: 1.25rem;
+  border: 0.2rem solid #7c3aed;
+  border-radius: 0.8rem;
+  background: #f5f3ff;
+}
+
+app-none-card .none-label {
+  color: #6d28d9;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+/* Intentionally unprefixed: this proves that None-mode CSS leaks outside the component. */
+.none-leak-target {
+  padding: 0.8rem;
+  border: 0.2rem dashed #7c3aed;
+  color: #6d28d9;
+  background: #f5f3ff;
+  font-weight: 800;
+}
