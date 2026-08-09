@@ -1,0 +1,10 @@
+<article class="demo-card">
+  <p class="label">Classic lazy NgModule route</p>
+  <h2>Loaded with <code>loadChildren</code></h2>
+  <p>
+    The dynamic import loads an NgModule. That module declares this non-standalone component and
+    registers its own child route using <code>RouterModule.forChild()</code>.
+  </p>
+  <p class="counter" aria-live="polite">Count: {{ count }}</p>
+  <button type="button" (click)="increment()">Increase classic counter</button>
+</article>

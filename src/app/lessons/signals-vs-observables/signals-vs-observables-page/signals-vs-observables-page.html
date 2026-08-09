@@ -58,6 +58,41 @@
   </section>
 </div>
 
+<section class="behavior-subject" aria-labelledby="behavior-subject-title">
+  <p class="label">Common pre-signals state pattern</p>
+  <h2 id="behavior-subject-title">
+    <code>BehaviorSubject</code>: an Observable with current state
+  </h2>
+  <p>
+    A plain <code>Subject</code> represents future events and has no current value. A
+    <code>BehaviorSubject</code> requires an initial value, remembers the latest value, and sends it
+    immediately to each new subscriber. This made it a common choice for Angular service stores
+    before signals.
+  </p>
+  <label for="behavior-search">Update BehaviorSubject state</label>
+  <input id="behavior-search" type="search" (input)="updateBehaviorQuery($event)" />
+
+  @if (behaviorResults$ | async; as result) {
+    <p>
+      Stored query: <code>{{ result.query || '(empty)' }}</code>
+    </p>
+    <ul>
+      @for (item of result.items; track item) {
+        <li>{{ item }}</li>
+      } @empty {
+        <li>No matches</li>
+      }
+    </ul>
+  }
+
+  <pre><code>private queryState = new BehaviorSubject('');
+readonly query$ = this.queryState.asObservable();
+
+update(query: string) &#123;
+  this.queryState.next(query);
+&#125;</code></pre>
+</section>
+
 <section class="debounced-signal" aria-labelledby="debounced-signal-title">
   <p class="label">Signal + RxJS timing</p>
   <h2 id="debounced-signal-title">How to debounce work driven by a signal</h2>
@@ -175,7 +210,7 @@ results = computed(() =&gt; expensiveSearch(debouncedQuery()));</code></pre>
     <tr>
       <th scope="row">Current value guaranteed?</th>
       <td>Yes</td>
-      <td>No; it may emit later or never</td>
+      <td>No for a general Observable; yes for a <code>BehaviorSubject</code></td>
     </tr>
     <tr>
       <th scope="row">Notification channels</th>

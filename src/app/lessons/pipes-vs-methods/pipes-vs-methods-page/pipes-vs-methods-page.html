@@ -1,0 +1,102 @@
+<header class="lesson-heading">
+  <p class="eyebrow">Lesson 12</p>
+  <h1>Pipes vs component methods</h1>
+  <p>
+    Both examples call the same filtering function and display the same result. The difference is
+    how Angular evaluates and caches the template expression.
+  </p>
+</header>
+
+<section class="controls" aria-labelledby="experiment-title">
+  <h2 id="experiment-title">Try the reference-change experiment</h2>
+
+  <label for="lesson-search">Filter lesson names</label>
+  <!-- A template reference gives the event expression a typed handle to this input element. -->
+  <input
+    #searchInput
+    id="lesson-search"
+    type="search"
+    [value]="query()"
+    (input)="query.set(searchInput.value)"
+    placeholder="For example: signal"
+  />
+
+  <div class="button-row">
+    <button type="button" (click)="incrementUnrelatedCounter()">
+      Change unrelated state ({{ unrelatedCount() }})
+    </button>
+    <button type="button" (click)="mutateFirstItem()">Mutate first item in place</button>
+    <button type="button" (click)="replaceArrayReference()">Replace array reference</button>
+    <button type="button" class="secondary" (click)="reset()">Reset</button>
+  </div>
+
+  <p class="status" aria-live="polite">{{ mutationMessage() }}</p>
+</section>
+
+<section class="comparison-grid" aria-label="Live pipe and method comparison">
+  <article>
+    <p class="label">Pure pipe</p>
+    <h2><code>lessons() | lessonFilter: query()</code></h2>
+    <ul>
+      <!-- @for needs a stable tracking key so Angular can reuse matching DOM nodes. -->
+      @for (lesson of lessons() | lessonFilter: query(); track lesson) {
+        <li>{{ lesson }}</li>
+      } @empty {
+        <li>No matching lessons</li>
+      }
+    </ul>
+    <p>
+      Angular caches the result while the array reference and query value remain unchanged. This is
+      efficient, but hidden in-place mutations are intentionally not detected.
+    </p>
+  </article>
+
+  <article>
+    <p class="label">Component method</p>
+    <h2><code>filteredWithMethod()</code></h2>
+    <ul>
+      @for (lesson of filteredWithMethod(); track lesson) {
+        <li>{{ lesson }}</li>
+      } @empty {
+        <li>No matching lessons</li>
+      }
+    </ul>
+    <p>
+      Angular invokes the method whenever it checks this view. It can observe mutated contents, but
+      it may repeat filtering when unrelated state changes.
+    </p>
+  </article>
+</section>
+
+<section class="explanation-grid">
+  <article>
+    <h2>Choose a pipe when…</h2>
+    <ul>
+      <li>The operation formats a value for display.</li>
+      <li>The transformation is reusable across templates.</li>
+      <li>The function is pure: the same inputs always produce the same output.</li>
+    </ul>
+  </article>
+  <article>
+    <h2>Choose a method when…</h2>
+    <ul>
+      <li>The work is trivial and specific to one component.</li>
+      <li>It handles an event rather than calculating displayed data.</li>
+      <li>Repeated evaluation has no meaningful performance cost.</li>
+    </ul>
+  </article>
+  <article>
+    <h2>Choose <code>computed()</code> when…</h2>
+    <ul>
+      <li>The value derives from signal state.</li>
+      <li>TypeScript and the template both need the result.</li>
+      <li>You want memoization based on tracked signal dependencies.</li>
+    </ul>
+  </article>
+</section>
+
+<aside>
+  <strong>Avoid impure pipes by default.</strong> Setting <code>pure: false</code> detects internal
+  array/object mutations, but it also runs the pipe on every check—giving up the main performance
+  advantage. Prefer immutable updates that create new references.
+</aside>

@@ -34,6 +34,12 @@ h1 {
   border-radius: 1rem;
   background: #ecfeff;
 }
+.behavior-subject {
+  padding: 1.5rem;
+  border: 0.2rem solid #c2410c;
+  border-radius: 1rem;
+  background: #fff7ed;
+}
 .value-comparison {
   display: flex;
   flex-wrap: wrap;

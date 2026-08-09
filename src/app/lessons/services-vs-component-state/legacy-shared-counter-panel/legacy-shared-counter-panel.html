@@ -1,0 +1,10 @@
+<article class="counter-card">
+  <p class="label">Pre-signals BehaviorSubject service</p>
+  <h3>{{ label }}</h3>
+  <!-- The async pipe unwraps the latest Observable emission for the template. -->
+  <p class="count">{{ counter.count$ | async }}</p>
+  <div class="actions">
+    <button type="button" (click)="counter.increment()">Increment shared state</button>
+    <button type="button" class="secondary" (click)="counter.reset()">Reset shared state</button>
+  </div>
+</article>

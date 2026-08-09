@@ -1,0 +1,22 @@
+:host {
+  display: block;
+  height: 100%;
+}
+.rating-card {
+  height: 100%;
+  box-sizing: border-box;
+  padding: 1.25rem;
+  border: 0.2rem solid #d97706;
+  border-radius: 0.8rem;
+  background: #fffbeb;
+}
+.label {
+  color: #b45309;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+.stars {
+  color: #d97706;
+  font-size: 2rem;
+  letter-spacing: 0.1rem;
+}

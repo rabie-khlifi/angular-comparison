@@ -37,6 +37,117 @@ left uncluttered so that the example remains easy to read.
 Each completed lesson will receive its own short section here explaining what
 the APIs do, their main differences, and when to choose each one.
 
+## Lesson 11: Eager vs lazy-loaded routes
+
+Open [`/route-loading`](http://localhost:4200/route-loading). Its two child
+routes render matching counters so that loading strategy—not component
+behavior—is the comparison.
+
+An **eager route** uses a static component import and the `component` property:
+
+```ts
+import { EagerRouteDemo } from './eager-route-demo';
+
+{ path: 'eager', component: EagerRouteDemo }
+```
+
+The bundler sees that normal import while building the application, so the
+component code is included in the initial JavaScript graph. The route can
+render immediately after navigation, but users download its code even if they
+never visit it. Eager loading suits small, essential landing experiences.
+
+A **lazy route** uses a dynamic `import()` through `loadComponent`:
+
+```ts
+{
+  path: 'lazy',
+  loadComponent: () =>
+    import('./lazy-route-demo').then((module) => module.LazyRouteDemo),
+}
+```
+
+The dynamic import creates a bundle split point. Angular downloads that chunk
+when navigation first needs it, reducing initial code at the cost of a possible
+first-navigation delay. Lazy loading is a strong default for larger and less
+frequently visited feature areas. Avoid splitting every tiny component because
+many small chunks can create unnecessary request and navigation overhead.
+
+`loadComponent` loads one standalone component. `loadChildren` loads a route
+configuration for an entire feature, including nested routes and route-scoped
+providers. Modern `loadChildren` can import a plain `Routes` array, so its name
+does not mean an NgModule is required.
+
+The page now also runs the classic pre-standalone NgModule pattern:
+
+```ts
+{
+  path: 'reports',
+  loadChildren: () =>
+    import('./reports/reports.module').then(module => module.ReportsModule),
+}
+```
+
+The lazy module declares its non-standalone component and imports
+`RouterModule.forChild(featureRoutes)`. The dynamic import still produces a
+separate chunk. This pattern remains supported for existing module-based
+applications; modern standalone features normally lazy-load a component or a
+plain `Routes` array instead.
+
+The Lesson 11 parent page is itself lazy-loaded, while the eager example is
+statically imported in the root route configuration. This intentionally shows
+that loading decisions apply at each route boundary: a lazy parent does not
+automatically make a statically imported child component lazy.
+
+## Lesson 12: Pipes vs component methods
+
+Open [`/pipes-vs-methods`](http://localhost:4200/pipes-vs-methods). Both sides
+filter the same lesson names with the same plain TypeScript function. One side
+calls it through a custom pipe; the other calls it through a component method.
+
+A **pipe** expresses a display transformation declaratively:
+
+```html
+@for (lesson of lessons() | lessonFilter: query(); track lesson) {
+<li>{{ lesson }}</li>
+}
+```
+
+Custom pipes implement `PipeTransform` and expose a `transform()` method. Pipes
+are pure by default. Angular reuses a pure pipe's cached result until a primitive
+argument changes or an array/object argument receives a new reference. This
+makes pipes well suited to reusable, side-effect-free display formatting.
+
+A **component method** is a normal TypeScript method called by the template:
+
+```html
+@for (lesson of filteredWithMethod(); track lesson) {
+<li>{{ lesson }}</li>
+}
+```
+
+Angular can call a template method every time it checks that view. This is fine
+for trivial operations, but expensive sorting, filtering, or allocation can be
+repeated because unrelated state changed. Event handlers are also naturally
+component methods because they perform actions rather than format values.
+
+The interactive mutation experiment explains pure-pipe reference checking. An
+in-place array mutation keeps the original reference, so the method sees the
+changed contents while the pure pipe retains its cached output. Creating a new
+array reference causes the pipe to run again. Prefer immutable updates rather
+than using `pure: false`; impure pipes run on every change-detection check and
+can create the same performance concern as an expensive template method.
+
+For signal-derived application state, a **computed signal** is often the third
+and best option. It is memoized based on the signals read during its calculation
+and can be consumed in both TypeScript and templates. Use pipes primarily for
+template formatting, computed signals for derived signal state, and methods for
+small component behavior or event handling.
+
+The filtering algorithm lives in a plain `filterLessons()` function. The pipe
+and method delegate to that function. Code outside a template should import the
+plain function instead of injecting a pipe class, keeping reusable logic
+independent from Angular's template API.
+
 ## Lesson 1: Standalone components vs NgModules
 
 Open [`/standalone-vs-ngmodule`](http://localhost:4200/standalone-vs-ngmodule)
@@ -93,6 +204,14 @@ attribute selector `[appInteractiveHighlight]` and `host` metadata to listen
 for focus and pointer events and toggle a CSS class on the existing host.
 Several directives can coexist on one element.
 
+Signals are incidental to this lesson, not part of the component/directive
+distinction. Before signals, the examples would store `isOnline` and
+`isHighlighted` as ordinary boolean properties and assign them in methods.
+Older directives often used `@HostBinding()` and `@HostListener()` decorators;
+those remain supported, while the `host` metadata object used here is preferred
+for new code. Neither state style changes the rule that a component owns a
+template and a directive does not.
+
 | Concern            | Component                                | Directive                                     |
 | ------------------ | ---------------------------------------- | --------------------------------------------- |
 | Decorator          | `@Component`                             | `@Directive`                                  |
@@ -126,6 +245,24 @@ A **structural directive** controls which embedded template views exist. It
 injects `TemplateRef` to access template content and `ViewContainerRef` to
 choose where that content is created or cleared. The custom `Unless` directive
 renders its template only while its condition is false.
+
+The page now runs classic counterparts beside the signal-based directives.
+`ClassicAccent` uses ordinary properties decorated with `@Input()`. Its host
+bindings read those properties without `()`. `ClassicUnless` reacts through an
+`@Input` setter and receives `TemplateRef` and `ViewContainerRef` through
+constructor injection:
+
+```ts
+@Input()
+set appClassicUnless(condition: boolean) {
+  this.container.clear();
+  if (!condition) this.container.createEmbeddedView(this.template);
+}
+```
+
+An input setter fits one immediately handled input; `ngOnChanges` is the
+classic alternative when changes to several inputs must be compared. Modern
+`input()` values can instead participate in `computed()` and `effect()`.
 
 The `*` is structural-directive shorthand, or _microsyntax_:
 
@@ -314,6 +451,20 @@ pause, `map()` transforms values, `distinctUntilChanged()` removes consecutive
 duplicates, and `shareReplay()` shares the most recent pipeline result. The `$`
 suffix in `observableResults$` is a naming convention, not special syntax.
 
+The lesson also includes the common pre-signals state pattern:
+
+```ts
+private readonly queryState = new BehaviorSubject('');
+readonly query$ = this.queryState.asObservable();
+```
+
+Unlike a plain `Subject`, a `BehaviorSubject` requires an initial value,
+remembers its latest value, and immediately emits that value to a new
+subscriber. It was frequently used for Angular service stores before signals
+and remains useful when current state must participate in RxJS pipelines. Keep
+the subject private, expose its Observable side, and provide methods that call
+`next()` so consumers cannot mutate state arbitrarily.
+
 `AsyncPipe` subscribes from the template, exposes the latest emission, marks
 the view for checking, and unsubscribes when its view is destroyed. Prefer it
 over a manual component subscription when the value is only needed in a
@@ -438,6 +589,13 @@ turning unrelated actions into model state.
 The legacy `@Input()` decorator remains supported for existing code. Modern
 code should generally prefer signal inputs because they compose naturally with
 `computed()` and provide stronger reactive semantics.
+
+The page now contains a working classic rating component as well. Its child API
+uses `@Input({ required: true }) rating`, its parent binds a plain property, and
+a TypeScript getter derives the stars. Both `@Input()` and `input()` implement
+one-way parent-to-child data flow. The classic property can react through a
+setter or `ngOnChanges`; an `InputSignal` instead composes directly with
+`computed()` and `effect()` and is read by calling it.
 
 Official reference: [Angular component inputs](https://angular.dev/guide/components/inputs).
 
@@ -660,6 +818,23 @@ object, call the same methods, and read the same signal. The private writable
 signal plus public read-only signal prevents components from bypassing the
 service's state-changing API.
 
+The orange pre-signals example provides the same shared behavior with RxJS:
+
+```ts
+private readonly countState = new BehaviorSubject(0);
+readonly count$ = this.countState.asObservable();
+
+increment(): void {
+  this.countState.next(this.countState.getValue() + 1);
+}
+```
+
+Both consumers use `AsyncPipe`, which subscribes, refreshes an OnPush view, and
+unsubscribes when the view is destroyed. The service is shared because both
+consumers resolve the same root provider—not because it uses a signal or a
+BehaviorSubject. Signals offer simpler synchronous reads; RxJS offers stream
+operators, async composition, cancellation, error, and completion channels.
+
 | Concern           | Component state                    | Service                                                           |
 | ----------------- | ---------------------------------- | ----------------------------------------------------------------- |
 | Default owner     | One component instance             | The injector providing the service                                |
@@ -815,6 +990,12 @@ The first matching provider wins. This is why the purple lesson panels receive
 their component instances even though the same service also has a root
 provider. Descendants inherit that nearer instance unless another descendant
 overrides it again.
+
+Provider scope is independent from the service's state technology. A service
+containing a plain property, a `BehaviorSubject`, a signal, or no state follows
+the same injector lookup, sharing, shadowing, and lifetime rules. Migrating a
+service from RxJS state to signals does not make it more or less singleton;
+moving its provider changes its instance scope.
 
 Do not put services in every component's `providers` array by habit. Doing so
 creates separate instances and is a common reason expected shared state does

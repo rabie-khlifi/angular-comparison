@@ -54,3 +54,10 @@ aside {
   border-left: 0.3rem solid #2563eb;
   background: #eff6ff;
 }
+pre {
+  overflow-x: auto;
+  padding: 1.25rem;
+  border-radius: 0.7rem;
+  background: #172033;
+  color: #e2e8f0;
+}

@@ -1,7 +1,15 @@
 import { AsyncPipe } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { Subject, debounceTime, distinctUntilChanged, map, shareReplay, startWith } from 'rxjs';
+import {
+  BehaviorSubject,
+  Subject,
+  debounceTime,
+  distinctUntilChanged,
+  map,
+  shareReplay,
+  startWith,
+} from 'rxjs';
 
 interface SearchResult {
   readonly query: string;
@@ -66,6 +74,21 @@ export class SignalsVsObservablesPage {
   protected readonly observableResultSignal = toSignal(this.observableResults$, {
     initialValue: { query: '', items: this.catalog },
   });
+
+  // PRE-SIGNALS STATE PATTERN ------------------------------------------------
+  // BehaviorSubject was commonly used for state because it always stores a current value.
+  private readonly behaviorQueryState = new BehaviorSubject('');
+
+  // Expose only the Observable side so consumers cannot call next() and bypass this class's API.
+  protected readonly behaviorResults$ = this.behaviorQueryState
+    .asObservable()
+    .pipe(map((query): SearchResult => ({ query, items: this.filterCatalog(query) })));
+
+  protected updateBehaviorQuery(event: Event): void {
+    const inputElement = event.target as HTMLInputElement;
+    // next() replaces the BehaviorSubject's stored current value and emits it to subscribers.
+    this.behaviorQueryState.next(inputElement.value);
+  }
 
   protected updateSignalQuery(event: Event): void {
     // EventTarget is broad, so narrow it before reading the input's value.

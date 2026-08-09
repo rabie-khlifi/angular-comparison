@@ -25,7 +25,8 @@ h1 {
   flex-direction: column;
 }
 .examples app-readonly-rating,
-.examples app-editable-rating {
+.examples app-editable-rating,
+.examples app-classic-readonly-rating {
   flex: 1;
 }
 .parent-controls {

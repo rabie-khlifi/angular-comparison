@@ -16,6 +16,23 @@
   </div>
 </section>
 
+<section class="details">
+  <h2>Provider scope existed before signals</h2>
+  <p>
+    Signals only make the counter value reactive; they do not create or share the service. The same
+    injector rules apply when a service stores a plain property, exposes a
+    <code>BehaviorSubject</code>/<code>Observable</code>, or has no state at all.
+  </p>
+  <pre><code>// All three use the provider's lifetime:
+count = 0;                         // plain property
+count$ = new BehaviorSubject(0);  // pre-signals reactive state
+count = signal(0);                // modern reactive state</code></pre>
+  <p>
+    Changing the state API does not change instance identity. Moving the provider between root,
+    route, component, or directive scope does.
+  </p>
+</section>
+
 <section aria-labelledby="component-title">
   <h2 id="component-title">Component scope: one instance per host subtree</h2>
   <p>

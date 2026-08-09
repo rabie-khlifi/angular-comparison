@@ -1,13 +1,15 @@
 import { NgIf } from '@angular/common';
 import { Component, signal } from '@angular/core';
 import { Accent } from '../accent';
+import { ClassicAccent } from '../classic-accent';
+import { ClassicUnless } from '../classic-unless';
 import { Unless } from '../unless';
 
 @Component({
   selector: 'app-attribute-vs-structural-page',
   // NgIf is imported only to teach the legacy syntax with a working example.
   // Modern @if needs no import; our custom directives are imported directly.
-  imports: [NgIf, Accent, Unless],
+  imports: [NgIf, Accent, Unless, ClassicAccent, ClassicUnless],
   templateUrl: './attribute-vs-structural-page.html',
   styleUrl: './attribute-vs-structural-page.css',
 })

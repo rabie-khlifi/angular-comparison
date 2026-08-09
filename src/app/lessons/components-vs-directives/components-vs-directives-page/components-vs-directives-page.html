@@ -1,63 +1,85 @@
 <header class="lesson-heading">
-    <p class="eyebrow">Lesson 2</p>
-    <h1>Components vs directives</h1>
-    <p>
-        A component owns new markup. A directive attaches reusable behavior to markup that already
-        exists.
-    </p>
+  <p class="eyebrow">Lesson 2</p>
+  <h1>Components vs directives</h1>
+  <p>
+    A component owns new markup. A directive attaches reusable behavior to markup that already
+    exists.
+  </p>
 </header>
 
 <section aria-labelledby="component-title">
-    <h2 id="component-title">Component: a reusable view</h2>
-    <p>The custom element below gets an entire view from <code>StatusCard</code>.</p>
-    <!-- Angular creates the component host, then renders status-card.html inside it. -->
-    <app-status-card />
+  <h2 id="component-title">Component: a reusable view</h2>
+  <p>The custom element below gets an entire view from <code>StatusCard</code>.</p>
+  <!-- Angular creates the component host, then renders status-card.html inside it. -->
+  <app-status-card />
 </section>
 
 <section aria-labelledby="directive-title">
-    <h2 id="directive-title">Directive: reusable behavior</h2>
-    <p>Hover or focus these ordinary elements. Their original HTML remains in this page.</p>
-    <div class="directive-examples">
-        <!-- The directive augments this paragraph; it does not replace its content. -->
-        <p appInteractiveHighlight tabindex="0">I am an existing paragraph with added behavior.</p>
-        <!-- The same directive decorates a different element without owning its markup. -->
-        <button appInteractiveHighlight type="button" class="cursor-pointer">I am an existing button</button>
-    </div>
+  <h2 id="directive-title">Directive: reusable behavior</h2>
+  <p>Hover or focus these ordinary elements. Their original HTML remains in this page.</p>
+  <div class="directive-examples">
+    <!-- The directive augments this paragraph; it does not replace its content. -->
+    <p appInteractiveHighlight tabindex="0">I am an existing paragraph with added behavior.</p>
+    <!-- The same directive decorates a different element without owning its markup. -->
+    <button appInteractiveHighlight type="button" class="cursor-pointer">
+      I am an existing button
+    </button>
+  </div>
 </section>
 
 <table>
-    <thead>
-        <tr>
-            <th scope="col">Question</th>
-            <th scope="col">Component</th>
-            <th scope="col">Directive</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <th scope="row">Has its own template?</th>
-            <td>Yes</td>
-            <td>No</td>
-        </tr>
-        <tr>
-            <th scope="row">Typical selector?</th>
-            <td>Element: <code>app-status-card</code></td>
-            <td>Attribute: <code>[appInteractiveHighlight]</code></td>
-        </tr>
-        <tr>
-            <th scope="row">Purpose?</th>
-            <td>Create a reusable UI view</td>
-            <td>Add behavior to an existing host</td>
-        </tr>
-        <tr>
-            <th scope="row">Instances per element?</th>
-            <td>At most one component</td>
-            <td>Multiple directives can coexist</td>
-        </tr>
-    </tbody>
+  <thead>
+    <tr>
+      <th scope="col">Question</th>
+      <th scope="col">Component</th>
+      <th scope="col">Directive</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">Has its own template?</th>
+      <td>Yes</td>
+      <td>No</td>
+    </tr>
+    <tr>
+      <th scope="row">Typical selector?</th>
+      <td>Element: <code>app-status-card</code></td>
+      <td>Attribute: <code>[appInteractiveHighlight]</code></td>
+    </tr>
+    <tr>
+      <th scope="row">Purpose?</th>
+      <td>Create a reusable UI view</td>
+      <td>Add behavior to an existing host</td>
+    </tr>
+    <tr>
+      <th scope="row">Instances per element?</th>
+      <td>At most one component</td>
+      <td>Multiple directives can coexist</td>
+    </tr>
+  </tbody>
 </table>
 
+<section aria-labelledby="before-signals-title">
+  <h2 id="before-signals-title">The same concepts before signals</h2>
+  <p>
+    Signals are only managing state in these examples. They do not determine whether a class is a
+    component or directive. Older Angular code normally stored the same state in plain fields:
+  </p>
+  <pre><code>isOnline = true;
+isHighlighted = false;
+
+toggleStatus() &#123;
+  this.isOnline = !this.isOnline;
+&#125;</code></pre>
+  <p>
+    Older directives also commonly used <code>&#64;HostBinding()</code> and
+    <code>&#64;HostListener()</code>. Those decorators remain supported, but Angular now recommends
+    the <code>host</code> metadata object used by <code>InteractiveHighlight</code>. Both styles add
+    behavior to the existing host and neither gives a directive its own template.
+  </p>
+</section>
+
 <aside>
-    <strong>Mental model:</strong> every component is a specialized directive with a template, but
-    most directives are not components.
+  <strong>Mental model:</strong> every component is a specialized directive with a template, but
+  most directives are not components.
 </aside>

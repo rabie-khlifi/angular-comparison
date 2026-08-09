@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { EagerRouteDemo } from './lessons/route-loading/eager-route-demo/eager-route-demo';
 
 // Routes connect URL paths to the page components that Angular renders.
 export const routes: Routes = [
@@ -91,6 +92,53 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./lessons/form-approaches/form-approaches-page/form-approaches-page').then(
         (module) => module.FormApproachesPage,
+      ),
+  },
+  {
+    path: 'route-loading',
+    title: 'Eager vs Lazy Routes | Angular Concepts Lab',
+    loadComponent: () =>
+      import('./lessons/route-loading/route-loading-page/route-loading-page').then(
+        (module) => module.RouteLoadingPage,
+      ),
+    children: [
+      {
+        path: '',
+        pathMatch: 'full',
+        redirectTo: 'eager',
+      },
+      {
+        path: 'eager',
+        // A direct component reference requires the static import at the top of this file.
+        // That makes this child eager even though its parent lesson page is lazy-loaded.
+        component: EagerRouteDemo,
+      },
+      {
+        path: 'lazy',
+        // Dynamic import delays fetching this component until the route is requested.
+        loadComponent: () =>
+          import('./lessons/route-loading/lazy-route-demo/lazy-route-demo').then(
+            (module) => module.LazyRouteDemo,
+          ),
+      },
+      {
+        path: 'legacy-module',
+        // This is the classic pre-standalone lazy-routing pattern.
+        // The dynamic import still creates a separate JavaScript chunk.
+        loadChildren: () =>
+          import('./lessons/route-loading/legacy-lazy-feature/legacy-lazy-feature.module').then(
+            (module) => module.LegacyLazyFeatureModule,
+          ),
+      },
+    ],
+  },
+  {
+    path: 'pipes-vs-methods',
+    title: 'Pipes vs Component Methods | Angular Concepts Lab',
+    // The whole lesson remains outside the initial bundle until this URL is visited.
+    loadComponent: () =>
+      import('./lessons/pipes-vs-methods/pipes-vs-methods-page/pipes-vs-methods-page').then(
+        (module) => module.PipesVsMethodsPage,
       ),
   },
 ];

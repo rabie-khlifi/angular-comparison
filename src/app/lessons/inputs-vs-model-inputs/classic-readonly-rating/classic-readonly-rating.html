@@ -1,0 +1,7 @@
+<article class="rating-card">
+  <p class="label">Classic &#64;Input()</p>
+  <!-- Ordinary input properties and getters are read without function-call parentheses. -->
+  <h2>{{ label }}</h2>
+  <p class="stars" [attr.aria-label]="rating + ' out of 5 stars'">{{ stars }}</p>
+  <p>The parent still owns the value; only the child API style changed.</p>
+</article>

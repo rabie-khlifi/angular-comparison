@@ -30,7 +30,39 @@
       Parent value changes from the child's buttons: <strong>{{ editableRating() }}</strong>
     </p>
   </section>
+
+  <section aria-labelledby="classic-input-example-title">
+    <h2 id="classic-input-example-title">Before signals: one-way &#64;Input</h2>
+    <app-classic-readonly-rating
+      [rating]="classicRating"
+      label="Classic parent-controlled rating"
+    />
+    <div class="parent-controls">
+      <span>Parent controls:</span>
+      <button type="button" (click)="lowerClassicRating()">Lower</button>
+      <button type="button" (click)="raiseClassicRating()">Raise</button>
+    </div>
+    <p>
+      Plain parent property: <strong>{{ classicRating }}</strong>
+    </p>
+  </section>
 </div>
+
+<section aria-labelledby="classic-input-title">
+  <h2 id="classic-input-title"><code>&#64;Input()</code> vs <code>input()</code></h2>
+  <pre><code>// Classic decorator API
+&#64;Input(&#123; required: true &#125;) rating!: number;
+get stars() &#123; return formatStars(this.rating); &#125;
+
+// Modern signal API
+rating = input.required&lt;number&gt;();
+stars = computed(() =&gt; formatStars(this.rating()));</code></pre>
+  <p>
+    Both are one-way parent-to-child inputs. A classic input is an ordinary property and commonly
+    reacts through a setter or <code>ngOnChanges</code>. A signal input is read-only reactive state
+    that composes directly with <code>computed()</code> and <code>effect()</code>.
+  </p>
+</section>
 
 <section aria-labelledby="syntax-title">
   <h2 id="syntax-title">What banana-in-a-box expands to</h2>

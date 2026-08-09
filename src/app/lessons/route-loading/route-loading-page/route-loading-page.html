@@ -1,0 +1,83 @@
+<header class="lesson-heading">
+  <p class="eyebrow">Lesson 11</p>
+  <h1>Eager vs lazy-loaded routes</h1>
+  <p>
+    Both links render the same counter. The visible result is the same; the important difference is
+    <strong>when the browser receives the component's JavaScript</strong>.
+  </p>
+</header>
+
+<nav class="demo-navigation" aria-label="Route loading examples">
+  <!-- routerLink navigates without a full browser-page reload. -->
+  <a routerLink="eager" routerLinkActive="active-example">Open eager example</a>
+  <a routerLink="lazy" routerLinkActive="active-example">Open lazy example</a>
+  <a routerLink="legacy-module" routerLinkActive="active-example">Open classic NgModule example</a>
+</nav>
+
+<!-- Child routes render here while the Lesson 11 page remains visible around them. -->
+<section class="example-outlet" aria-label="Selected route example">
+  <router-outlet />
+</section>
+
+<section class="details">
+  <h2>Before standalone: lazy-load an NgModule</h2>
+  <pre><code>&#123;
+  path: 'reports',
+  loadChildren: () =&gt;
+    import('./reports/reports.module').then(
+      (module) =&gt; module.ReportsModule
+    )
+&#125;</code></pre>
+  <p>
+    The lazy NgModule declares its components and calls <code>RouterModule.forChild()</code> with
+    its feature routes. This remains supported for existing applications. Modern standalone features
+    can instead lazy-load one component with <code>loadComponent</code> or a plain route array with
+    <code>loadChildren</code>.
+  </p>
+</section>
+
+<section class="explanation-grid" aria-label="Loading strategy explanations">
+  <article>
+    <h2>Eager: <code>component</code></h2>
+    <pre><code>import {{ '{' }} EagerRouteDemo {{ '}' }} from './eager-route-demo';
+
+{{ '{' }} path: 'eager', component: EagerRouteDemo {{ '}' }}</code></pre>
+    <p>
+      A normal static import lets the bundler include the component immediately. Navigation is ready
+      without downloading that component later, but every eager feature increases startup code—even
+      if the user never opens it.
+    </p>
+  </article>
+
+  <article>
+    <h2>Lazy: <code>loadComponent</code></h2>
+    <pre><code>{{ '{' }}
+  path: 'lazy',
+  loadComponent: () =&gt;
+    import('./lazy-route-demo').then(
+      (module) =&gt; module.LazyRouteDemo
+    )
+{{ '}' }}</code></pre>
+    <p>
+      Dynamic <code>import()</code> creates a split point. The initial bundle can be smaller, while
+      the first visit may wait briefly for the extra chunk. Later visits normally reuse the
+      browser's downloaded code.
+    </p>
+  </article>
+</section>
+
+<section class="details">
+  <h2><code>loadComponent</code> vs <code>loadChildren</code></h2>
+  <p>
+    Use <code>loadComponent</code> to lazy-load one standalone component. Use
+    <code>loadChildren</code> to lazy-load a route configuration containing a feature's parent,
+    child, guard, and provider setup. Despite its historical name, <code>loadChildren</code> can
+    load a modern <code>Routes</code> array; it does not require an NgModule.
+  </p>
+</section>
+
+<aside>
+  <strong>Practical rule:</strong> eagerly load the small, essential landing experience. Lazy-load
+  larger or less frequently visited feature areas. Too many tiny lazy chunks can add request and
+  navigation overhead, so split by meaningful features rather than every component.
+</aside>

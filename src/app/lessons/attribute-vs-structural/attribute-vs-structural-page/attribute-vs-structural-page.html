@@ -16,6 +16,44 @@
   <button type="button" (click)="toggleAccent()">Change accent color</button>
 </section>
 
+<section aria-labelledby="directive-api-history-title">
+  <h2 id="directive-api-history-title">Before signals: classic directive inputs</h2>
+  <p>
+    These two examples behave like the modern examples above. The difference is how they receive
+    changes and access dependencies—not what makes a directive attribute or structural.
+  </p>
+  <div class="version-comparison">
+    <article>
+      <h3>Classic attribute directive</h3>
+      <p [appClassicAccent]="accentColor()" backgroundColor="#fff7ed">
+        This host reads ordinary properties decorated with <code>&#64;Input()</code>.
+      </p>
+      <pre><code>&#64;Input() appClassicAccent = '#2563eb';
+
+host: &#123;
+  '[style.border-left-color]': 'appClassicAccent'
+&#125;</code></pre>
+    </article>
+    <article>
+      <h3>Classic structural directive</h3>
+      <p class="availability" *appClassicUnless="maintenanceMode()">
+        This view is controlled by an <code>&#64;Input</code> setter.
+      </p>
+      <pre><code>&#64;Input()
+set appClassicUnless(condition: boolean) &#123;
+  this.container.clear();
+  if (!condition) this.container.createEmbeddedView(this.template);
+&#125;</code></pre>
+    </article>
+  </div>
+  <p>
+    An input setter is useful when one input immediately triggers work. <code>ngOnChanges</code> is
+    the classic alternative when several inputs must be compared together. Modern signal inputs
+    compose with <code>computed()</code> and <code>effect()</code>; classic inputs are read as
+    ordinary properties.
+  </p>
+</section>
+
 <section aria-labelledby="structural-title">
   <h2 id="structural-title">Structural directive: change the view structure</h2>
   <button type="button" (click)="toggleMaintenance()">

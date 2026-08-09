@@ -1,0 +1,12 @@
+<article class="demo-card">
+  <p class="label">Eager route</p>
+  <h2>Loaded with <code>component</code></h2>
+  <p>
+    <code>EagerRouteDemo</code> is statically imported by <code>app.routes.ts</code>. Its code is
+    available in the initial application bundle, even before you visit this child route.
+  </p>
+
+  <!-- Reading count() registers the signal as a template dependency. -->
+  <p class="counter" aria-live="polite">Count: {{ count() }}</p>
+  <button type="button" (click)="increment()">Increase eager counter</button>
+</article>

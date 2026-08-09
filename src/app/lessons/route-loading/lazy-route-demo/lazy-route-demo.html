@@ -1,0 +1,11 @@
+<article class="demo-card">
+  <p class="label">Lazy route</p>
+  <h2>Loaded with <code>loadComponent</code></h2>
+  <p>
+    The router calls a dynamic <code>import()</code> when this URL is requested. Angular can place
+    this component in a separate JavaScript chunk instead of the initial bundle.
+  </p>
+
+  <p class="counter" aria-live="polite">Count: {{ count() }}</p>
+  <button type="button" (click)="increment()">Increase lazy counter</button>
+</article>

@@ -19,6 +19,30 @@
   </div>
 </section>
 
+<section aria-labelledby="legacy-shared-title">
+  <h2 id="legacy-shared-title">Before signals: BehaviorSubject service state</h2>
+  <p>
+    These orange panels also share one root service. The service stores its current value in a
+    <code>BehaviorSubject</code>, exposes an Observable, and the templates consume it with
+    <code>AsyncPipe</code>.
+  </p>
+  <div class="counter-grid">
+    <app-legacy-shared-counter-panel label="RxJS consumer A" />
+    <app-legacy-shared-counter-panel label="RxJS consumer B" />
+  </div>
+  <pre><code>private countState = new BehaviorSubject(0);
+readonly count$ = this.countState.asObservable();
+
+increment() &#123;
+  this.countState.next(this.countState.getValue() + 1);
+&#125;</code></pre>
+  <p>
+    The service ownership is identical to the signal version. Signals simplify synchronous reads and
+    template consumption; RxJS remains valuable when the state participates in asynchronous
+    pipelines, cancellation, or stream composition.
+  </p>
+</section>
+
 <section aria-labelledby="shared-title">
   <h2 id="shared-title">Service state: two consumers, one instance</h2>
   <p>
@@ -99,6 +123,11 @@
     <li>Angular searches the injector hierarchy and returns the existing root instance.</li>
     <li>Both templates track the service's same read-only count signal.</li>
   </ol>
+  <p>
+    In the classic version, both templates instead subscribe to the same
+    <code>count$</code> Observable through <code>AsyncPipe</code>. Dependency injection—not signals
+    or RxJS—is what makes either service shared.
+  </p>
   <p>
     A service class is not automatically a singleton merely because its name ends with “Service.”
     Provider placement determines how many instances exist. Lesson 9 explores that scope difference
