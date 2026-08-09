@@ -37,9 +37,80 @@ left uncluttered so that the example remains easy to read.
 14. Default vs OnPush change detection
 15. Emulated vs None vs Shadow DOM view encapsulation
 16. View queries, content projection, ng-template, and ng-container
+17. Route parameters vs query parameters; RouterLink vs Router.navigate
+18. Route guards vs data resolvers
 
 Each completed lesson will receive its own short section here explaining what
 the APIs do, their main differences, and when to choose each one.
+
+## Lesson 17: Route parameters, query parameters, and navigation
+
+Open [`/routing-parameters/42`](http://localhost:4200/routing-parameters/42).
+The same routed component remains mounted while links and buttons change the
+learner ID and optional tab state.
+
+A **route parameter** is a required path segment declared with a colon, such as
+`routing-parameters/:learnerId`. It normally identifies the resource being
+displayed. A **query parameter** follows `?`, is not declared in the route path,
+and normally represents optional filters, sorting, tabs, or pagination.
+
+`RouterLink` is declarative navigation. Prefer it for visible destinations
+because an anchor preserves browser behaviors such as copying a link or opening
+it in another tab. `Router.navigate()` is imperative navigation for decisions
+made after validation, saving, authentication, or other TypeScript logic.
+
+Before signals, components consumed `ActivatedRoute.paramMap` and
+`queryParamMap` as Observables—often with `AsyncPipe` or a managed subscription.
+The lesson keeps that working approach and also bridges each Observable once
+with `toSignal()`. A snapshot is only a one-time read and does not react when
+Angular reuses the component for new URL values.
+
+Because this application prerenders routes, `app.routes.server.ts` also defines
+`getPrerenderParams()` for learner IDs `42` and `84`. Parameterized routes cannot
+be prerendered until Angular knows which concrete URLs to generate. IDs not
+known during the build would normally use server or client rendering instead.
+
+| Concern           | Route parameter   | Query parameter              |
+| ----------------- | ----------------- | ---------------------------- |
+| Example           | `/learners/42`    | `?tab=settings`              |
+| Route declaration | `learners/:id`    | Not part of path declaration |
+| Typical meaning   | Required identity | Optional view/filter state   |
+| Reactive source   | `paramMap`        | `queryParamMap`              |
+
+## Lesson 18: Route guards vs data resolvers
+
+Open [`/route-control`](http://localhost:4200/route-control). Toggle demo access
+and navigate to four real child routes: functional/class-based guards and
+functional/class-based resolvers.
+
+A **guard** decides whether navigation can continue. `CanActivate` answers
+whether a route may activate; other guard types include `CanMatch`,
+`CanActivateChild`, and `CanDeactivate`. Return `true`, `false`, a redirect
+`UrlTree`/`RedirectCommand`, or a Promise/Observable of one. Returning a redirect
+is preferable to calling `navigate()` from inside the guard.
+
+A **resolver** obtains critical data after guards succeed but before route
+activation finishes. Resolved values appear in `ActivatedRoute.data`. Because
+navigation waits, resolvers should load only data genuinely required before the
+screen can render; noncritical content can load after activation.
+
+Before functional APIs and signals, Angular used injectable classes that
+implemented `CanActivate` or `Resolve<T>`, constructor injection, and route-data
+Observables consumed through `AsyncPipe`. Lesson 18 runs those classic classes.
+It also runs modern `CanActivateFn`/`ResolveFn` functions using `inject()` and
+bridges resolved route data to a signal.
+
+| Question      | Guard                                         | Resolver                                  |
+| ------------- | --------------------------------------------- | ----------------------------------------- |
+| Main job      | Allow, block, or redirect navigation          | Supply critical route data                |
+| Timing        | Before activation                             | After guards, before activation completes |
+| Common result | Boolean or redirect                           | Data value, Promise, or Observable        |
+| Modern API    | `CanActivateFn`/other guard functions         | `ResolveFn<T>`                            |
+| Classic API   | Injectable class implementing guard interface | Class implementing `Resolve<T>`           |
+
+Client-side guards improve navigation behavior but provide no real security.
+Users control browser code, so the backend must authorize every sensitive API
+request independently.
 
 ## Lesson 16: View queries, content projection, and template containers
 

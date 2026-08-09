@@ -1,0 +1,82 @@
+<header class="lesson-heading">
+  <p class="eyebrow">Lesson 17</p>
+  <h1>Route parameters vs query parameters</h1>
+  <p>The path identifies the learner resource; the query string controls an optional view of it.</p>
+</header>
+
+<section class="current-url">
+  <h2>Current route values</h2>
+  <!-- AsyncPipe is the classic reactive template-consumption pattern. -->
+  <p>
+    Classic Observable + AsyncPipe: learner <strong>{{ classicLearnerId$ | async }}</strong
+    >, tab <strong>{{ classicTab$ | async }}</strong>
+  </p>
+  <!-- Signal bridges provide the same values through synchronous reads. -->
+  <p>
+    Modern toSignal(): learner <strong>{{ learnerId() }}</strong
+    >, tab <strong>{{ tab() }}</strong>
+  </p>
+  <code>/routing-parameters/{{ learnerId() }}?tab={{ tab() }}</code>
+</section>
+
+<section class="navigation-grid">
+  <article>
+    <h2>Declarative <code>RouterLink</code></h2>
+    <p>
+      Use links when navigation is a visible user destination. They preserve normal anchor behavior.
+    </p>
+    <a [routerLink]="['/routing-parameters', 42]" [queryParams]="{ tab: 'overview' }"
+      >Learner 42 overview</a
+    >
+    <a [routerLink]="['/routing-parameters', 84]" [queryParams]="{ tab: 'settings' }"
+      >Learner 84 settings</a
+    >
+  </article>
+  <article>
+    <h2>Programmatic <code>Router.navigate()</code></h2>
+    <p>
+      Use Router when navigation follows validation, saving, authentication, or another code
+      decision.
+    </p>
+    <button type="button" (click)="openNextLearner()">Open next learner after logic</button>
+    <button type="button" (click)="switchTabWithoutChangingId()">Switch only query tab</button>
+  </article>
+</section>
+
+<table>
+  <thead>
+    <tr>
+      <th>Concern</th>
+      <th>Route parameter</th>
+      <th>Query parameter</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>Example</th>
+      <td><code>/learners/42</code></td>
+      <td><code>?tab=settings</code></td>
+    </tr>
+    <tr>
+      <th>Route definition</th>
+      <td><code>learners/:learnerId</code></td>
+      <td>Not declared in path</td>
+    </tr>
+    <tr>
+      <th>Meaning</th>
+      <td>Required resource identity</td>
+      <td>Optional filter/view/sort state</td>
+    </tr>
+    <tr>
+      <th>Read from</th>
+      <td><code>paramMap</code></td>
+      <td><code>queryParamMap</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<aside>
+  <strong>Snapshots are not reactive.</strong> <code>route.snapshot</code> is fine for a one-time
+  read, but use the parameter Observables or signal bridges when the same component can remain
+  mounted while its URL values change.
+</aside>

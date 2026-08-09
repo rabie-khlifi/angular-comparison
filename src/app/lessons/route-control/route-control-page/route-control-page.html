@@ -1,0 +1,63 @@
+<header class="lesson-heading">
+  <p class="eyebrow">Lesson 18</p>
+  <h1>Route guards vs data resolvers</h1>
+  <p>
+    Guards decide whether navigation may continue. Resolvers obtain critical data before the
+    destination activates.
+  </p>
+</header>
+
+<section class="access-control">
+  <h2>Guard experiment</h2>
+  <p>
+    Current demo access: <strong>{{ access.allowed() ? 'allowed' : 'denied' }}</strong>
+  </p>
+  <button type="button" (click)="access.toggle()">Toggle access</button>
+</section>
+
+<nav class="example-links" aria-label="Guard and resolver examples">
+  <a routerLink="functional-guard" routerLinkActive="active">Functional guard</a>
+  <a routerLink="classic-guard" routerLinkActive="active">Classic class guard</a>
+  <a routerLink="functional-resolver" routerLinkActive="active">Functional resolver</a>
+  <a routerLink="classic-resolver" routerLinkActive="active">Classic class resolver</a>
+</nav>
+
+<!-- Successful child routes render here; denied guards redirect back to this parent page. -->
+<router-outlet />
+
+<section class="comparison-grid">
+  <article>
+    <h2>Guard</h2>
+    <ul>
+      <li>Runs before activation.</li>
+      <li>Returns allow, block, redirect, Promise, or Observable.</li>
+      <li>Protects navigation UX, not backend security.</li>
+    </ul>
+  </article>
+  <article>
+    <h2>Resolver</h2>
+    <ul>
+      <li>Runs after guards succeed and before activation completes.</li>
+      <li>Supplies values through route data.</li>
+      <li>Delays navigation, so keep critical work small.</li>
+    </ul>
+  </article>
+</section>
+
+<section class="details">
+  <h2>Before signals and functional APIs</h2>
+  <p>
+    Older Angular used injectable classes implementing <code>CanActivate</code> or
+    <code>Resolve&lt;T&gt;</code>, constructor injection, and route-data Observables consumed with
+    <code>AsyncPipe</code>. All are demonstrated here.
+  </p>
+  <p>
+    Modern routes prefer <code>CanActivateFn</code>/<code>ResolveFn</code>, <code>inject()</code>,
+    and optionally bridge route data to signals. The router contract itself is unchanged.
+  </p>
+</section>
+
+<aside>
+  <strong>Security rule:</strong> never rely on a browser guard to authorize sensitive data or
+  actions. The server must validate every protected request.
+</aside>

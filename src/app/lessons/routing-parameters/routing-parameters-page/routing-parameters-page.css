@@ -1,0 +1,68 @@
+:host {
+  display: block;
+}
+.lesson-heading {
+  max-width: 58rem;
+}
+.eyebrow {
+  color: #be123c;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+h1 {
+  margin-block: 0.25rem 1rem;
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  line-height: 1.05;
+}
+section {
+  margin-block: 2rem;
+}
+.current-url,
+.navigation-grid article {
+  padding: 1.25rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 0.75rem;
+  background: white;
+}
+.navigation-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr));
+  gap: 1rem;
+}
+a,
+button {
+  display: block;
+  margin-block: 0.6rem;
+  padding: 0.65rem 0.9rem;
+  border-radius: 0.4rem;
+}
+a {
+  color: #1d4ed8;
+  background: #eff6ff;
+}
+button {
+  border: 0;
+  color: white;
+  background: #1d4ed8;
+  cursor: pointer;
+}
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+}
+th,
+td {
+  padding: 0.85rem;
+  border: 1px solid #cbd5e1;
+  text-align: left;
+}
+thead {
+  background: #e2e8f0;
+}
+aside {
+  margin-top: 2rem;
+  padding: 1rem 1.25rem;
+  border-left: 0.3rem solid #d97706;
+  background: #fffbeb;
+}

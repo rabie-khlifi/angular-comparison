@@ -174,4 +174,25 @@ export const routes: Routes = [
         (module) => module.QueriesAndProjectionPage,
       ),
   },
+  {
+    path: 'routing-parameters',
+    pathMatch: 'full',
+    redirectTo: 'routing-parameters/42',
+  },
+  {
+    path: 'routing-parameters/:learnerId',
+    title: 'Route and Query Parameters | Angular Concepts Lab',
+    loadComponent: () =>
+      import('./lessons/routing-parameters/routing-parameters-page/routing-parameters-page').then(
+        (module) => module.RoutingParametersPage,
+      ),
+  },
+  {
+    path: 'route-control',
+    title: 'Guards vs Resolvers | Angular Concepts Lab',
+    loadChildren: () =>
+      import('./lessons/route-control/route-control.routes').then(
+        (module) => module.ROUTE_CONTROL_ROUTES,
+      ),
+  },
 ];

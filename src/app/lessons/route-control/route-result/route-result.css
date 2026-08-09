@@ -1,0 +1,10 @@
+:host {
+  display: block;
+}
+.result-card {
+  margin-block: 1rem;
+  padding: 1.25rem;
+  border: 0.2rem solid #059669;
+  border-radius: 0.75rem;
+  background: #ecfdf5;
+}
