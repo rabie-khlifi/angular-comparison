@@ -1,0 +1,189 @@
+<header class="lesson-heading">
+  <p class="eyebrow">Lesson 3</p>
+  <h1>Attribute directives vs structural directives</h1>
+  <p>
+    Attribute directives modify an existing host. Structural directives control whether template
+    views exist.
+  </p>
+</header>
+
+<section aria-labelledby="attribute-title">
+  <h2 id="attribute-title">Attribute directive: change the host</h2>
+  <!-- The paragraph always exists; appAccent only changes its styles and class. -->
+  <p [appAccent]="accentColor()" backgroundColor="#f8fafc">
+    Inspect me in DevTools: this same paragraph remains in the DOM when its accent changes.
+  </p>
+  <button type="button" (click)="toggleAccent()">Change accent color</button>
+</section>
+
+<section aria-labelledby="structural-title">
+  <h2 id="structural-title">Structural directive: change the view structure</h2>
+  <button type="button" (click)="toggleMaintenance()">
+    Turn maintenance {{ maintenanceMode() ? 'off' : 'on' }}
+  </button>
+
+  <!-- The asterisk is shorthand for an <ng-template [appUnless]="..."> wrapper. -->
+  <article class="availability" *appUnless="maintenanceMode()">
+    I exist only while maintenance mode is false.
+  </article>
+
+  <!-- Modern built-in control flow is preferred for ordinary conditions. -->
+  @if (maintenanceMode()) {
+    <p class="maintenance">
+      Maintenance is active, so the structural directive removed its embedded view.
+    </p>
+  }
+</section>
+
+<section aria-labelledby="desugaring-title">
+  <h2 id="desugaring-title">What Angular does with the asterisk</h2>
+  <pre><code>&lt;article *appUnless="condition"&gt;...&lt;/article&gt;
+
+becomes conceptually:
+
+&lt;ng-template [appUnless]="condition"&gt;
+  &lt;article&gt;...&lt;/article&gt;
+&lt;/ng-template&gt;</code></pre>
+</section>
+
+<section aria-labelledby="built-in-title">
+  <h2 id="built-in-title">Were *ngIf and *ngFor structural directives?</h2>
+  <p>
+    <strong>Yes.</strong> Angular historically provided these through <code>CommonModule</code>.
+    They use the same structural-directive machinery as our custom <code>*appUnless</code> example.
+  </p>
+
+  <div class="version-comparison">
+    <article>
+      <h3>Legacy built-in directives</h3>
+      <!-- These are shown as text, not executed by this lesson template. -->
+      <pre><code>*ngIf="isVisible"
+*ngFor="let item of items"
+[ngSwitch] with *ngSwitchCase and *ngSwitchDefault</code></pre>
+      <p>
+        <code>NgIf</code>, <code>NgFor</code>, and the <code>NgSwitch</code> family are deprecated
+        since Angular 20. They still exist in Angular 22 for compatibility, but new code should
+        avoid them.
+      </p>
+    </article>
+
+    <article>
+      <h3>Modern built-in control flow</h3>
+      <!-- Encode @ so this explanatory text is not parsed as a real block. -->
+      <pre><code>&#64;if (isVisible) &#123; ... &#125;
+&#64;for (item of items; track item.id) &#123; ... &#125;
+&#64;switch (value) &#123; ... &#125;</code></pre>
+      <p>
+        These are compiler-supported template blocks, not directive classes. They need no
+        <code>CommonModule</code> or component import.
+      </p>
+    </article>
+  </div>
+</section>
+
+<section aria-labelledby="ngif-else-title">
+  <h2 id="ngif-else-title">Complete legacy *ngIf with else example</h2>
+  <p>
+    This example really imports and runs <code>NgIf</code>. Toggle the condition to make Angular
+    swap between two template views.
+  </p>
+  <button type="button" (click)="togglePermission()">
+    Set permission to {{ hasPermission() ? 'denied' : 'allowed' }}
+  </button>
+
+  <!--
+    When true, Angular creates this inline article view.
+    `else noPermission` points to the separately named <ng-template> below.
+  -->
+  <article class="permission allowed" *ngIf="hasPermission(); else noPermission">
+    Permission granted: the *ngIf "then" view is rendered.
+  </article>
+
+  <!--
+    #noPermission is a template reference variable, not a DOM id.
+    <ng-template> is dormant by itself; NgIf creates it only for the false branch.
+  -->
+  <ng-template #noPermission>
+    <article class="permission denied">
+      Permission denied: the referenced "else" template is rendered.
+    </article>
+  </ng-template>
+
+  <pre><code>&lt;article *ngIf="hasPermission; else noPermission"&gt;
+  Permission granted
+&lt;/article&gt;
+
+&lt;ng-template #noPermission&gt;
+  Permission denied
+&lt;/ng-template&gt;</code></pre>
+</section>
+
+<section aria-labelledby="one-structural-title">
+  <h2 id="one-structural-title">Why only one * directive per element?</h2>
+  <p>
+    Each asterisk asks Angular to wrap that element in one hidden <code>ng-template</code>. With two
+    asterisks, Angular cannot know which generated template should be outside and execute first.
+    Nesting order changes behavior, so you must write that order explicitly.
+  </p>
+
+  <h3>Invalid: two structural shorthands compete for one element</h3>
+  <pre><code>&lt;li *ngIf="show" *ngFor="let item of items"&gt;
+  [item value]
+&lt;/li&gt;</code></pre>
+
+  <h3>Correct: use a wrapper to define the order</h3>
+  <pre><code>&lt;ng-container *ngIf="show"&gt;
+  &lt;li *ngFor="let item of items"&gt;[item value]&lt;/li&gt;
+&lt;/ng-container&gt;</code></pre>
+  <p>
+    The outer condition runs first. Only when true does Angular create the inner template whose
+    <code>*ngFor</code> produces list items. <code>ng-container</code> groups template behavior
+    without adding a real HTML wrapper to the rendered DOM.
+  </p>
+
+  <h3>Modern equivalent: nested control-flow blocks</h3>
+  <pre><code>&#64;if (show) &#123;
+  &#64;for (item of items; track item) &#123;
+    &lt;li&gt;[item value]&lt;/li&gt;
+  &#125;
+&#125;</code></pre>
+</section>
+
+<table>
+  <thead>
+    <tr>
+      <th scope="col">Question</th>
+      <th scope="col">Attribute</th>
+      <th scope="col">Structural</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">Changes what?</th>
+      <td>Existing host appearance or behavior</td>
+      <td>Which embedded views exist</td>
+    </tr>
+    <tr>
+      <th scope="row">Typical syntax</th>
+      <td><code>[appAccent]="color"</code></td>
+      <td><code>*appUnless="condition"</code></td>
+    </tr>
+    <tr>
+      <th scope="row">Key APIs</th>
+      <td>Host bindings and events</td>
+      <td><code>TemplateRef</code> and <code>ViewContainerRef</code></td>
+    </tr>
+    <!-- Encode @ because a literal @if begins Angular control-flow parsing. -->
+    <tr>
+      <th scope="row">Ordinary conditionals</th>
+      <td>Not applicable</td>
+      <td>Prefer built-in <code>&#64;if</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<aside>
+  <strong>Remember:</strong> “one structural directive” means one <code>*...</code> shorthand on a
+  single host element. It does not mean a page can use only one structural directive. Use as many as
+  needed on separate or explicitly nested elements.
+</aside>

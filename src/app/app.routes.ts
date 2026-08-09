@@ -27,4 +27,13 @@ export const routes: Routes = [
         (module) => module.ComponentsVsDirectivesPage,
       ),
   },
+  {
+    path: 'attribute-vs-structural',
+    title: 'Attribute vs Structural Directives | Angular Concepts Lab',
+    // Lazy loading keeps this lesson out of the initial JavaScript bundle.
+    loadComponent: () =>
+      import('./lessons/attribute-vs-structural/attribute-vs-structural-page/attribute-vs-structural-page').then(
+        (module) => module.AttributeVsStructuralPage,
+      ),
+  },
 ];
