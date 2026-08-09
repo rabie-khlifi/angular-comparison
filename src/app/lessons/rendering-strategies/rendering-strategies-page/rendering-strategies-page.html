@@ -1,0 +1,42 @@
+<header class="lesson-heading">
+  <p class="eyebrow">Lesson 23</p>
+  <h1>CSR vs SSR vs SSG—and hydration</h1>
+  <p>This same component is configured with three server rendering modes at the route level.</p>
+</header>
+
+<nav class="mode-picker" aria-label="Rendering strategy examples">
+  <a routerLink="/rendering-strategies/csr">CSR route</a>
+  <a routerLink="/rendering-strategies/ssr">SSR route</a>
+  <a routerLink="/rendering-strategies/ssg">SSG route</a>
+</nav>
+
+<section class="status" aria-live="polite">
+  <h2>Selected strategy: {{ selectedMode().toUpperCase() }}</h2>
+  <p>The component instance producing this visible page is currently running in the <strong>{{ runningPlatform }}</strong>.</p>
+  <p>After SSR/SSG HTML hydrates, the browser owns the interactive Angular component, so seeing “browser” here is expected.</p>
+</section>
+
+<div class="grid">
+  <article>
+    <h2>CSR: client-side rendering</h2>
+    <p>The server sends an application shell; browser JavaScript builds the page. It is simple and suits private dashboards, but initial content and SEO wait for JavaScript.</p>
+  </article>
+  <article>
+    <h2>SSR: server-side rendering</h2>
+    <p>A server renders fresh HTML for each initial request. It suits dynamic, public content, but adds server runtime cost and request latency.</p>
+  </article>
+  <article>
+    <h2>SSG: prerendering</h2>
+    <p>The build creates static HTML in advance. It is fast and CDN-friendly, but changing content requires another build and it cannot contain per-user data.</p>
+  </article>
+</div>
+
+<section class="details">
+  <h2>Hydration is a separate step</h2>
+  <p>SSR and SSG answer <em>where and when the initial HTML is created</em>. Hydration answers <em>how that existing HTML becomes interactive</em>. Angular reuses server-created DOM and attaches behavior instead of discarding and rebuilding it.</p>
+  <p><strong>Older approach:</strong> apps often destroyed server HTML and rendered again in the browser, causing extra work and visible layout changes. <strong>Modern approach:</strong> <code>provideClientHydration()</code> reuses it, with event replay protecting early user actions.</p>
+</section>
+
+<aside>
+  Avoid browser-only globals such as <code>window</code>, <code>document</code>, and <code>localStorage</code> during server execution. Guard them with platform checks or run browser-dependent work after rendering.
+</aside>

@@ -1,0 +1,48 @@
+<header class="lesson-heading">
+  <p class="eyebrow">Lesson 22</p>
+  <h1>Signal Forms vs classic Reactive Forms</h1>
+  <p>Enter <code>admin</code> in either form to see asynchronous validation reject it.</p>
+</header>
+
+<div class="grid">
+  <form (submit)="submitModern($event)">
+    <h2>Modern: Signal Forms</h2>
+    <label>Username <input [formField]="modernForm.username" /></label>
+    @if (modernForm.username().pending()) { <small>Checking availability…</small> }
+    @for (error of modernForm.username().errors(); track error.kind) {
+      <small class="error">{{ error.message }}</small>
+    }
+    <label>Email <input type="email" [formField]="modernForm.email" /></label>
+    @for (error of modernForm.email().errors(); track error.kind) {
+      <small class="error">{{ error.message }}</small>
+    }
+    <button [disabled]="modernForm().invalid() || modernForm().pending()">Submit signal form</button>
+    <p aria-live="polite">{{ modernMessage() }}</p>
+  </form>
+
+  <!-- formGroup and formControlName are the classic model-driven binding directives. -->
+  <form [formGroup]="classicForm" (ngSubmit)="submitClassic()">
+    <h2>Classic: Reactive Forms</h2>
+    <label>Username <input formControlName="username" /></label>
+    @if (classicForm.controls.username.pending) { <small>Checking availability…</small> }
+    @if (classicForm.controls.username.touched && classicForm.controls.username.hasError('required')) {
+      <small class="error">A username is required.</small>
+    }
+    @if (classicForm.controls.username.hasError('taken')) {
+      <small class="error">The username admin is already taken.</small>
+    }
+    <label>Email <input type="email" formControlName="email" /></label>
+    @if (classicForm.controls.email.touched && classicForm.controls.email.invalid) {
+      <small class="error">Enter a valid email address.</small>
+    }
+    <button [disabled]="classicForm.invalid || classicForm.pending">Submit reactive form</button>
+    <p aria-live="polite">{{ classicMessage() }}</p>
+  </form>
+</div>
+
+<section class="details">
+  <h2>The important difference</h2>
+  <p><strong>Signal Forms:</strong> the signal object is your data model. The form tree adds validation and interaction state, and field state is read by calling the field: <code>modernForm.username().pending()</code>.</p>
+  <p><strong>Reactive Forms:</strong> <code>FormGroup</code> and <code>FormControl</code> are the form model. Their values/statuses expose Observables, and async validators traditionally return an Observable or Promise.</p>
+  <p>Reactive Forms are not obsolete. They remain appropriate in existing codebases and mature form libraries. For new Angular 21+ forms, Signal Forms provide typed signal-native state with less manual bridging.</p>
+</section>

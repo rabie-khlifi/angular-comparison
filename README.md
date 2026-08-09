@@ -41,9 +41,69 @@ left uncluttered so that the example remains easy to read.
 18. Route guards vs data resolvers
 19. HttpClient Observables vs httpResource signals
 20. Class-based vs functional HTTP interceptors
+21. Advanced RxJS operators and signal interop
+22. Signal Forms vs classic Reactive Forms async validation
+23. CSR vs SSR vs SSG and hydration
+24. Modern zoneless vs classic Angular testing patterns
 
 Each completed lesson will receive its own short section here explaining what
 the APIs do, their main differences, and when to choose each one.
+
+## Lesson 21: Advanced RxJS operators and signal interop
+
+Open [`/advanced-rxjs`](http://localhost:4200/advanced-rxjs). Its simulated
+search combines `debounceTime`, `distinctUntilChanged`, `switchMap`,
+`catchError`, and `shareReplay`. `switchMap` cancels a stale search;
+`concatMap` queues work; `mergeMap` runs work concurrently; and `exhaustMap`
+ignores new triggers while current work is active.
+
+The classic view consumes the shared Observable with `AsyncPipe`. The modern
+view converts that same stream with `toSignal`. Both automatically clean up;
+choose `AsyncPipe` when the stream can stay in the template and `toSignal`
+when signal-based computed state needs the latest emitted value. Signals are
+not a replacement for RxJS cancellation and concurrency operators.
+
+## Lesson 22: Advanced forms and asynchronous validation
+
+Open [`/advanced-forms`](http://localhost:4200/advanced-forms) and enter
+`admin` as either username. Modern Signal Forms use a signal as the source of
+truth, `[formField]` for binding, and `validateAsync()` with a resource. Field
+state is read by calling the field, for example
+`modernForm.username().pending()`.
+
+Classic Reactive Forms use `FormGroup`/`FormControl`, `formControlName`, and an
+`AsyncValidatorFn` returning an Observable or Promise. Angular cancels stale
+async validation when values change in both examples. Reactive Forms remain a
+sound choice for existing code and libraries; Angular 21+ new development can
+prefer the typed, signal-native Signal Forms API.
+
+## Lesson 23: CSR, SSR, SSG, and hydration
+
+Open [`/rendering-strategies/ssg`](http://localhost:4200/rendering-strategies/ssg).
+The page links to three real route configurations. CSR renders in the browser,
+SSR produces initial HTML per server request, and SSG/prerendering produces
+static HTML during `ng build`. Choose based on content freshness, SEO, server
+cost, and whether output is user-specific—not because one mode is universally
+newer or better.
+
+Hydration is separate from rendering: it reuses SSR/SSG DOM and attaches
+Angular behavior in the browser. Older non-hydrating designs re-rendered and
+replaced server HTML. This app uses `provideClientHydration()`. Server-safe
+components avoid unguarded access to `window`, `document`, and `localStorage`.
+
+## Lesson 24: Angular testing fundamentals
+
+Open [`/testing-fundamentals`](http://localhost:4200/testing-fundamentals).
+It includes a signal counter, a classic mutable-property counter, and a real
+Vitest specification beside the component. Tests use `TestBed` and
+`ComponentFixture`, then follow arrange → act → `await fixture.whenStable()` →
+assert.
+
+Older zone-based suites often force rendering with `detectChanges()` and
+coordinate timers through `fakeAsync()`/`tick()`. Modern zoneless tests prefer
+ordinary async code and waiting for stability. `TestBed` is still current;
+the important improvement is asserting public behavior without coupling tests
+to private implementation details or manual rendering timing.
 
 ## Lesson 19: HttpClient Observables vs httpResource signals
 

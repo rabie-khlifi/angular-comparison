@@ -1,0 +1,39 @@
+<header class="lesson-heading">
+  <p class="eyebrow">Lesson 24</p>
+  <h1>Angular testing fundamentals</h1>
+  <p>The two working counters below are also exercised by the adjacent Vitest specification.</p>
+</header>
+
+<div class="grid">
+  <article>
+    <h2>Modern signal state</h2>
+    <app-signal-test-counter />
+    <p>The test can call <code>count.set()</code>, wait for stability, and assert rendered output.</p>
+  </article>
+  <article>
+    <h2>Classic property state</h2>
+    <app-classic-test-counter />
+    <p>The same user-facing behavior is tested through a click. Regular properties still work.</p>
+  </article>
+</div>
+
+<section class="details">
+  <h2>Arrange, act, wait, assert</h2>
+  <ol>
+    <li><strong>Arrange:</strong> configure <code>TestBed</code> and create a component fixture.</li>
+    <li><strong>Act:</strong> change an input/state value or trigger a real DOM event.</li>
+    <li><strong>Wait:</strong> use <code>await fixture.whenStable()</code> for scheduled rendering.</li>
+    <li><strong>Assert:</strong> verify visible behavior rather than private implementation details.</li>
+  </ol>
+</section>
+
+<section class="details">
+  <h2>Old vs current testing habits</h2>
+  <p><strong>Older zone-based tests</strong> frequently called <code>fixture.detectChanges()</code>, used <code>fakeAsync()</code>/<code>tick()</code>, and manually coordinated change detection.</p>
+  <p><strong>Modern zoneless tests</strong> favor normal async functions and <code>whenStable()</code>. This follows the user interaction → scheduled render → assertion lifecycle and is less coupled to implementation timing.</p>
+  <p><code>TestBed</code> and <code>ComponentFixture</code> are not obsolete: they remain the standard Angular test environment. Vitest is the runner providing <code>describe</code>, <code>it</code>, and <code>expect</code>.</p>
+</section>
+
+<aside>
+  Prefer testing public behavior: text, accessible roles, emitted events, navigation, and service contracts. A test that reaches into private methods may pass while the actual UI is broken.
+</aside>

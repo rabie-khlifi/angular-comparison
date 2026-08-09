@@ -211,4 +211,58 @@ export const routes: Routes = [
         (module) => module.HttpInterceptorsPage,
       ),
   },
+  {
+    path: 'advanced-rxjs',
+    title: 'Advanced RxJS Operators | Angular Concepts Lab',
+    loadComponent: () =>
+      import('./lessons/advanced-rxjs/advanced-rxjs-page/advanced-rxjs-page').then(
+        (module) => module.AdvancedRxjsPage,
+      ),
+  },
+  {
+    path: 'advanced-forms',
+    title: 'Advanced Forms and Async Validation | Angular Concepts Lab',
+    loadComponent: () =>
+      import('./lessons/advanced-forms/advanced-forms-page/advanced-forms-page').then(
+        (module) => module.AdvancedFormsPage,
+      ),
+  },
+  {
+    path: 'rendering-strategies',
+    pathMatch: 'full',
+    redirectTo: 'rendering-strategies/ssg',
+  },
+  {
+    path: 'rendering-strategies/csr',
+    title: 'CSR Rendering | Angular Concepts Lab',
+    data: { mode: 'csr' },
+    loadComponent: loadRenderingStrategiesPage,
+  },
+  {
+    path: 'rendering-strategies/ssr',
+    title: 'SSR Rendering | Angular Concepts Lab',
+    data: { mode: 'ssr' },
+    loadComponent: loadRenderingStrategiesPage,
+  },
+  {
+    path: 'rendering-strategies/ssg',
+    title: 'SSG Rendering | Angular Concepts Lab',
+    data: { mode: 'ssg' },
+    loadComponent: loadRenderingStrategiesPage,
+  },
+  {
+    path: 'testing-fundamentals',
+    title: 'Angular Testing Fundamentals | Angular Concepts Lab',
+    loadComponent: () =>
+      import(
+        './lessons/testing-fundamentals/testing-fundamentals-page/testing-fundamentals-page'
+      ).then((module) => module.TestingFundamentalsPage),
+  },
 ];
+
+// Reusing one loader keeps all three strategy routes pointed at the same educational component.
+function loadRenderingStrategiesPage() {
+  return import(
+    './lessons/rendering-strategies/rendering-strategies-page/rendering-strategies-page'
+  ).then((module) => module.RenderingStrategiesPage);
+}

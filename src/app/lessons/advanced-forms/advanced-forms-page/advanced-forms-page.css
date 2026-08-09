@@ -1,0 +1,8 @@
+:host { display: block; }
+.lesson-heading, .details, form { padding: 1rem; margin-bottom: 1rem; border: 1px solid #cbd5e1; border-radius: .75rem; }
+.eyebrow { color: #7c3aed; font-weight: 700; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr)); gap: 1rem; }
+label { display: grid; gap: .35rem; margin: .8rem 0; font-weight: 700; }
+input, button { padding: .65rem; font: inherit; }
+.error { display: block; color: #b91c1c; margin-bottom: .5rem; }
+code { color: #6d28d9; }

@@ -1,0 +1,66 @@
+<header class="lesson-heading">
+  <p class="eyebrow">Lesson 21</p>
+  <h1>Advanced RxJS operators and signal interop</h1>
+  <p>Type quickly: only the latest search survives the debounce and cancellation pipeline.</p>
+</header>
+
+<label class="search-label">
+  Search term
+  <!-- input emits a DOM event; the component converts it into an RxJS stream event. -->
+  <input value="angular" (input)="search($event)" placeholder="Try signals or routing" />
+</label>
+
+<div class="grid">
+  <article>
+    <h2>Classic consumption: AsyncPipe</h2>
+    <p><code>results$ | async</code> subscribes, renders emissions, and unsubscribes automatically.</p>
+    @if (results$ | async; as results) {
+      <ul>
+        @for (result of results; track result.id) {
+          <li>{{ result.label }}</li>
+        } @empty {
+          <li>No matches.</li>
+        }
+      </ul>
+    }
+  </article>
+
+  <article>
+    <h2>Modern consumption: toSignal</h2>
+    <p><code>toSignal()</code> subscribes once and exposes the latest emission synchronously.</p>
+    <ul>
+      @for (result of signalResults(); track result.id) {
+        <li>{{ result.label }}</li>
+      } @empty {
+        <li>No matches.</li>
+      }
+    </ul>
+  </article>
+</div>
+
+<section class="details">
+  <h2>Why each pipeline operator is here</h2>
+  <ol>
+    <li><code>debounceTime(350)</code> waits until typing pauses.</li>
+    <li><code>distinctUntilChanged()</code> skips consecutive duplicate terms.</li>
+    <li><code>switchMap()</code> cancels stale searches and keeps only the newest result.</li>
+    <li><code>catchError()</code> converts failure into a value so the UI stream stays alive.</li>
+    <li><code>shareReplay(1)</code> shares the latest result between multiple consumers.</li>
+  </ol>
+</section>
+
+<section class="details">
+  <h2>Choose the correct flattening operator</h2>
+  <div class="operator-grid">
+    <p><strong>switchMap:</strong> cancel old work. Best for searches and route-driven reads.</p>
+    <p><strong>concatMap:</strong> queue work in order. Best when every save must complete sequentially.</p>
+    <p><strong>mergeMap:</strong> run concurrently. Best for independent work when order is irrelevant.</p>
+    <p><strong>exhaustMap:</strong> ignore new events while busy. Best for preventing double submits.</p>
+  </div>
+</section>
+
+<aside>
+  <strong>Signals do not replace RxJS operators.</strong> Use RxJS for asynchronous event streams,
+  cancellation, concurrency, and composition. Use signals for synchronous UI state. AsyncPipe remains
+  excellent; <code>toSignal()</code> is useful when the rest of a component uses signals.
+</aside>

@@ -1,0 +1,8 @@
+:host { display: block; }
+.lesson-heading, .details, article, aside { padding: 1rem; margin-bottom: 1rem; border: 1px solid #cbd5e1; border-radius: .75rem; }
+.eyebrow { color: #7c3aed; font-weight: 700; }
+.search-label { display: grid; gap: .4rem; max-width: 30rem; margin: 1rem 0; font-weight: 700; }
+input { padding: .7rem; font: inherit; }
+.grid, .operator-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); gap: 1rem; }
+code { color: #6d28d9; }
+
