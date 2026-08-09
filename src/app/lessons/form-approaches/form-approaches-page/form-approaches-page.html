@@ -1,0 +1,129 @@
+<header class="lesson-heading">
+  <p class="eyebrow">Lesson 10</p>
+  <h1>Template-driven vs reactive vs signal forms</h1>
+  <p>
+    The three forms collect and validate the same name and email. Their main difference is where the
+    form model and rules live.
+  </p>
+</header>
+
+<section class="form-grid" aria-label="Live form approach comparison">
+  <app-template-driven-profile-form />
+  <app-reactive-profile-form />
+  <app-signal-profile-form />
+</section>
+
+<section aria-labelledby="mental-model-title">
+  <h2 id="mental-model-title">Three mental models</h2>
+  <div class="explanation-grid">
+    <article>
+      <h3>Template-driven</h3>
+      <p>
+        The template declares controls and validators. Angular discovers them through directives and
+        builds an internal form model.
+      </p>
+    </article>
+    <article>
+      <h3>Reactive</h3>
+      <p>
+        TypeScript explicitly constructs FormControl/FormGroup objects. The template connects
+        elements to that existing model.
+      </p>
+    </article>
+    <article>
+      <h3>Signal Forms</h3>
+      <p>
+        A signal owns the domain model. form() derives a typed field tree, and schema rules plus
+        FormField connect validation and controls.
+      </p>
+    </article>
+  </div>
+</section>
+
+<table>
+  <thead>
+    <tr>
+      <th scope="col">Concern</th>
+      <th scope="col">Template-driven</th>
+      <th scope="col">Reactive</th>
+      <th scope="col">Signal Forms</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">Import</th>
+      <td><code>FormsModule</code></td>
+      <td><code>ReactiveFormsModule</code></td>
+      <td><code>FormField</code></td>
+    </tr>
+    <tr>
+      <th scope="row">Model source</th>
+      <td>Template directives + plain object</td>
+      <td><code>FormGroup</code>/<code>FormControl</code></td>
+      <td>Signal model + field tree</td>
+    </tr>
+    <tr>
+      <th scope="row">Binding</th>
+      <td><code>[(ngModel)]</code></td>
+      <td><code>formControlName</code></td>
+      <td><code>[formField]</code></td>
+    </tr>
+    <tr>
+      <th scope="row">Validation</th>
+      <td>HTML/directive attributes</td>
+      <td><code>Validators</code> functions</td>
+      <td>Signal Forms schema rules</td>
+    </tr>
+    <tr>
+      <th scope="row">Change stream</th>
+      <td>Directive state</td>
+      <td><code>valueChanges</code>/<code>events</code> Observables</td>
+      <td>State signals</td>
+    </tr>
+    <tr>
+      <th scope="row">Best fit</th>
+      <td>Small, simple legacy forms</td>
+      <td>Existing complex reactive-form code</td>
+      <td>New forms in Angular 21+</td>
+    </tr>
+  </tbody>
+</table>
+
+<section class="details">
+  <h2>How to choose</h2>
+  <p>
+    <strong>Template-driven:</strong> concise for a small form, but behavior becomes spread through
+    HTML and scales poorly when rules become dynamic.
+  </p>
+  <p>
+    <strong>Reactive:</strong> mature, explicit, testable, and powerful for dynamic groups and
+    arrays. Keep it for established codebases already invested in this model.
+  </p>
+  <p>
+    <strong>Signal Forms:</strong> preferred for new forms in this Angular 22 project. It offers
+    typed signal state, schema rules, field metadata signals, and direct integration with modern
+    Angular reactivity.
+  </p>
+</section>
+
+<section class="details">
+  <h2>Signal Forms rules that prevent common mistakes</h2>
+  <ul>
+    <li>
+      Initialize fields with non-null values such as empty strings, zero, false, or empty arrays.
+    </li>
+    <li>Call a field to access state: <code>profileForm.email().errors()</code>.</li>
+    <li>
+      Do not add <code>value</code>, <code>disabled</code>, <code>readonly</code>, <code>min</code>,
+      or <code>max</code> to a control using <code>[formField]</code>; express those through the
+      model/schema APIs.
+    </li>
+    <li>The callback passed to <code>submit()</code> is async and runs only for a valid form.</li>
+  </ul>
+</section>
+
+<aside>
+  <strong>Do not rewrite a stable form only for fashion.</strong> Choose based on Angular version,
+  existing architecture, complexity, team knowledge, and migration cost. For new Angular 22 work,
+  start with Signal Forms.
+</aside>

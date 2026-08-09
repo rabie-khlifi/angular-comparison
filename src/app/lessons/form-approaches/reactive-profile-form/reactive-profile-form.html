@@ -1,0 +1,28 @@
+<article class="form-card">
+  <p class="label">Reactive</p>
+  <h2>TypeScript defines the form</h2>
+
+  <!-- formGroup connects this form element to the preconstructed FormGroup. -->
+  <form [formGroup]="profileForm" (ngSubmit)="submitProfile()">
+    <label for="reactive-name">Name</label>
+    <input id="reactive-name" formControlName="name" />
+    @if (profileForm.controls.name.touched && profileForm.controls.name.hasError('required')) {
+      <p class="error">Name is required.</p>
+    }
+
+    <label for="reactive-email">Email</label>
+    <input id="reactive-email" type="email" formControlName="email" />
+    @if (profileForm.controls.email.touched && profileForm.controls.email.invalid) {
+      <p class="error">Enter a valid email.</p>
+    }
+
+    <button type="submit" [disabled]="profileForm.invalid">Submit</button>
+    <button type="button" class="secondary" (click)="profileForm.reset()">Reset</button>
+  </form>
+
+  <p>
+    <strong>Model:</strong> {{ profileForm.controls.name.value || '(empty)' }},
+    {{ profileForm.controls.email.value || '(empty)' }}
+  </p>
+  <p><strong>Result:</strong> {{ submittedValue }}</p>
+</article>

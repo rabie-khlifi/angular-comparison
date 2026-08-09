@@ -85,4 +85,12 @@ export const routes: Routes = [
         (module) => module.ProviderScopesPage,
       ),
   },
+  {
+    path: 'form-approaches',
+    title: 'Angular Form Approaches | Angular Concepts Lab',
+    loadComponent: () =>
+      import('./lessons/form-approaches/form-approaches-page/form-approaches-page').then(
+        (module) => module.FormApproachesPage,
+      ),
+  },
 ];

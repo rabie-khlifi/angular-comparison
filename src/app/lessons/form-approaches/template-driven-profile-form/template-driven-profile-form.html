@@ -1,0 +1,40 @@
+<article class="form-card">
+  <p class="label">Template-driven</p>
+  <h2>Directives define the form</h2>
+
+  <!-- NgForm is created automatically; #profileForm exposes that directive instance. -->
+  <form #profileForm="ngForm" (ngSubmit)="submitProfile(profileForm)">
+    <label for="template-name">Name</label>
+    <!-- name registers this NgModel control with the parent NgForm. -->
+    <input id="template-name" name="name" required [(ngModel)]="profile.name" #name="ngModel" />
+    @if (name.touched && name.errors?.['required']) {
+      <p class="error">Name is required.</p>
+    }
+
+    <label for="template-email">Email</label>
+    <input
+      id="template-email"
+      name="email"
+      type="email"
+      required
+      email
+      [(ngModel)]="profile.email"
+      #emailControl="ngModel"
+    />
+    @if (emailControl.touched && emailControl.invalid) {
+      <p class="error">Enter a valid email.</p>
+    }
+
+    <button type="submit" [disabled]="profileForm.invalid">Submit</button>
+    <button
+      type="button"
+      class="secondary"
+      (click)="profileForm.resetForm({ name: '', email: '' })"
+    >
+      Reset
+    </button>
+  </form>
+
+  <p><strong>Model:</strong> {{ profile.name || '(empty)' }}, {{ profile.email || '(empty)' }}</p>
+  <p><strong>Result:</strong> {{ submittedValue }}</p>
+</article>

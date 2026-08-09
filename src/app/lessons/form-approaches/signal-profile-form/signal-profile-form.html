@@ -1,0 +1,28 @@
+<article class="form-card">
+  <p class="label">Signal Forms</p>
+  <h2>Signal model defines the form</h2>
+
+  <form (submit)="submitProfile($event)">
+    <label for="signal-name">Name</label>
+    <!-- formField handles value, interaction state, and validation bindings. -->
+    <input id="signal-name" [formField]="profileForm.name" />
+    @if (profileForm.name().touched() && profileForm.name().errors().length) {
+      <p class="error">{{ profileForm.name().errors()[0].message }}</p>
+    }
+
+    <label for="signal-email">Email</label>
+    <input id="signal-email" type="email" [formField]="profileForm.email" />
+    @if (profileForm.email().touched() && profileForm.email().errors().length) {
+      <p class="error">{{ profileForm.email().errors()[0].message }}</p>
+    }
+
+    <button type="submit" [disabled]="profileForm().invalid()">Submit</button>
+    <button type="button" class="secondary" (click)="profileForm().reset()">Reset</button>
+  </form>
+
+  <p>
+    <strong>Model:</strong> {{ profileModel().name || '(empty)' }},
+    {{ profileModel().email || '(empty)' }}
+  </p>
+  <p><strong>Result:</strong> {{ submittedValue() }}</p>
+</article>
