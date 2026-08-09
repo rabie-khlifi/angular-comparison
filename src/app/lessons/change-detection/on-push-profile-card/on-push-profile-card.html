@@ -1,0 +1,13 @@
+<article class="profile-card">
+  <p class="label">OnPush / CheckOnce</p>
+  <h2>{{ profile.name }}</h2>
+  <p>Level: {{ profile.level }}</p>
+
+  <!-- Both local approaches work because their buttons are events inside this component. -->
+  <p>Plain local clicks: {{ localClicks }}</p>
+  <p>Signal clicks: {{ signalClicks() }}</p>
+  <div class="button-row">
+    <button type="button" (click)="incrementPlainProperty()">Update plain property</button>
+    <button type="button" (click)="incrementSignal()">Update signal</button>
+  </div>
+</article>

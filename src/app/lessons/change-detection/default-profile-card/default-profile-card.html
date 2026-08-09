@@ -1,0 +1,7 @@
+<article class="profile-card">
+  <p class="label">Default / CheckAlways</p>
+  <h2>{{ profile.name }}</h2>
+  <p>Level: {{ profile.level }}</p>
+  <p>Plain local clicks: {{ localClicks }}</p>
+  <button type="button" (click)="incrementLocally()">Run local template event</button>
+</article>

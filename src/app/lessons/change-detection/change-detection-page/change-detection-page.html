@@ -1,0 +1,89 @@
+<header class="lesson-heading">
+  <p class="eyebrow">Lesson 14</p>
+  <h1>Default vs OnPush change detection</h1>
+  <p>
+    Both children receive the same classic object input. Mutate it, replace it, or manually mark the
+    OnPush child to see which views Angular checks.
+  </p>
+</header>
+
+<section class="controls" aria-labelledby="experiment-title">
+  <h2 id="experiment-title">Run the reference experiment</h2>
+  <div class="button-row">
+    <button type="button" class="danger" (click)="mutateObjectInPlace()">
+      1. Mutate same object
+    </button>
+    <button type="button" (click)="replaceObjectReference()">2. Replace object reference</button>
+    <button type="button" (click)="manuallyMarkChild()">3. Call markForCheck()</button>
+    <button type="button" class="secondary" (click)="reset()">Reset</button>
+  </div>
+  <p class="status" aria-live="polite">{{ experimentStatus() }}</p>
+</section>
+
+<section class="comparison-grid" aria-label="Change detection strategy comparison">
+  <app-default-profile-card [profile]="profile" />
+  <app-on-push-profile-card [profile]="profile" />
+</section>
+
+<section class="details">
+  <h2>What can trigger an OnPush check?</h2>
+  <ul>
+    <li>A bound input receives a different value/reference according to Angular's comparison.</li>
+    <li>An event listener runs inside the component or its view subtree.</li>
+    <li>A signal read by the template changes.</li>
+    <li><code>AsyncPipe</code> receives a new Observable/Promise value.</li>
+    <li>Code explicitly calls <code>markForCheck()</code> or <code>detectChanges()</code>.</li>
+  </ul>
+</section>
+
+<section class="explanation-grid">
+  <article>
+    <h2>Before signals</h2>
+    <p>
+      OnPush applications used immutable input updates, template events, <code>AsyncPipe</code>, and
+      <code>ChangeDetectorRef.markForCheck()</code>. RxJS stores commonly emitted new immutable
+      objects that AsyncPipe delivered to the view.
+    </p>
+  </article>
+  <article>
+    <h2>With signals</h2>
+    <p>
+      When an OnPush template reads a signal, Angular tracks that dependency. Calling
+      <code>set()</code> or <code>update()</code> notifies Angular to check that view. Signals
+      reduce manual marking, but input objects should still be updated immutably.
+    </p>
+  </article>
+</section>
+
+<table>
+  <thead>
+    <tr>
+      <th scope="col">Concern</th>
+      <th scope="col">Default</th>
+      <th scope="col">OnPush</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">Checking behavior</th>
+      <td>Checked whenever its ancestor traversal reaches it</td>
+      <td>Can skip the subtree until a known trigger marks it</td>
+    </tr>
+    <tr>
+      <th scope="row">Same-reference mutation</th>
+      <td>Often appears to work because the view is checked</td>
+      <td>Can remain stale because input identity did not change</td>
+    </tr>
+    <tr>
+      <th scope="row">Best state style</th>
+      <td>Immutable updates still improve predictability</td>
+      <td>Immutable inputs plus signals/AsyncPipe</td>
+    </tr>
+  </tbody>
+</table>
+
+<aside>
+  <strong>OnPush is not “check only once.”</strong> It means Angular may skip a clean subtree. Do
+  not mutate inputs and then depend on an unrelated click to reveal the change; replace references
+  or use a reactive source that explicitly notifies Angular.
+</aside>

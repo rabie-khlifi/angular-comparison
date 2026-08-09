@@ -150,4 +150,12 @@ export const routes: Routes = [
         (module) => module.ComponentLifecyclePage,
       ),
   },
+  {
+    path: 'change-detection',
+    title: 'Default vs OnPush Change Detection | Angular Concepts Lab',
+    loadComponent: () =>
+      import('./lessons/change-detection/change-detection-page/change-detection-page').then(
+        (module) => module.ChangeDetectionPage,
+      ),
+  },
 ];
