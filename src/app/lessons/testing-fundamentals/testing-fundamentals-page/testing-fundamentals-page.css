@@ -1,6 +1,10 @@
 :host { display: block; }
-.lesson-heading, .details, article, aside { padding: 1rem; margin-bottom: 1rem; border: 1px solid #cbd5e1; border-radius: .75rem; }
-.eyebrow { color: #7c3aed; font-weight: 700; }
-.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr)); gap: 1rem; }
-button { padding: .7rem 1rem; font: inherit; cursor: pointer; }
+.lesson-heading { max-width: 58rem; }
+.eyebrow { color: #be123c; font-weight: 800; text-transform: uppercase; }
+h1 { margin-block: .25rem 1rem; font-size: clamp(2rem, 5vw, 3.5rem); line-height: 1.05; }
+.details, .grid article { padding: 1.25rem; border: 1px solid #cbd5e1; border-radius: .75rem; background: white; }
+.details { margin-block: 2rem; }
+.grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 22rem), 1fr)); gap: 1rem; margin-block: 2rem; }
+button { padding: .65rem .9rem; border: 0; border-radius: .4rem; color: white; background: #1d4ed8; font: inherit; cursor: pointer; }
 code { color: #6d28d9; }
+aside { margin-top: 2rem; padding: 1rem 1.25rem; border-left: .3rem solid #d97706; background: #fffbeb; }
