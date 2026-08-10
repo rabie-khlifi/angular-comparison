@@ -1,0 +1,50 @@
+<header class="hero">
+  <p class="eyebrow">Interactive Angular learning project</p>
+  <h1>Learn Angular concepts by comparing them</h1>
+  <p class="intro">
+    Angular Concepts Lab is a collection of focused, interactive lessons. Each page places two
+    related ideas side by side so you can see how they behave, when they differ, and when to use
+    each one.
+  </p>
+  <div class="highlights" aria-label="Project highlights">
+    <span>Angular 22</span>
+    <span>27 lessons</span>
+    <span>CSR, SSR and SSG</span>
+  </div>
+</header>
+
+<section class="about" aria-labelledby="about-title">
+  <div>
+    <p class="section-label">About the lab</p>
+    <h2 id="about-title">Small examples, visible differences</h2>
+  </div>
+  <p>
+    The project covers components, reactivity, forms, routing, HTTP, testing, accessibility,
+    rendering, and performance. Use the lessons in order as a learning path, or open only the
+    comparison you need.
+  </p>
+</section>
+
+<section class="catalog" aria-labelledby="lessons-title">
+  <div class="catalog-heading">
+    <div>
+      <p class="section-label">Lesson catalog</p>
+      <h2 id="lessons-title">Choose a lesson</h2>
+    </div>
+    <p>Every card links directly to its public URL.</p>
+  </div>
+
+  <ol class="lesson-grid">
+    @for (lesson of lessons; track lesson.path) {
+      <li>
+        <a class="lesson-card" [routerLink]="lesson.path">
+          <span class="lesson-number">Lesson {{ lesson.number }}</span>
+          <h3>{{ lesson.title }}</h3>
+          <p>{{ lesson.description }}</p>
+          <code>{{ lesson.path }}</code>
+          <span class="open-label" aria-hidden="true">Open lesson <span>→</span></span>
+        </a>
+      </li>
+    }
+  </ol>
+</section>

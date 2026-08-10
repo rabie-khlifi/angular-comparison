@@ -5,9 +5,8 @@ import { EagerRouteDemo } from './lessons/route-loading/eager-route-demo/eager-r
 export const routes: Routes = [
   {
     path: '',
-    // A full match prevents the empty path from also matching every URL prefix.
-    pathMatch: 'full',
-    redirectTo: 'standalone-vs-ngmodule',
+    title: 'Angular Concepts Lab | Interactive Angular Lessons',
+    loadComponent: () => import('./home-page/home-page').then((module) => module.HomePage),
   },
   {
     path: 'standalone-vs-ngmodule',
@@ -254,9 +253,9 @@ export const routes: Routes = [
     path: 'testing-fundamentals',
     title: 'Angular Testing Fundamentals | Angular Concepts Lab',
     loadComponent: () =>
-      import(
-        './lessons/testing-fundamentals/testing-fundamentals-page/testing-fundamentals-page'
-      ).then((module) => module.TestingFundamentalsPage),
+      import('./lessons/testing-fundamentals/testing-fundamentals-page/testing-fundamentals-page').then(
+        (module) => module.TestingFundamentalsPage,
+      ),
   },
   {
     path: 'state-management',
@@ -278,15 +277,15 @@ export const routes: Routes = [
     path: 'performance-debugging',
     title: 'Angular Performance and Debugging | Angular Concepts Lab',
     loadComponent: () =>
-      import(
-        './lessons/performance-debugging/performance-debugging-page/performance-debugging-page'
-      ).then((module) => module.PerformanceDebuggingPage),
+      import('./lessons/performance-debugging/performance-debugging-page/performance-debugging-page').then(
+        (module) => module.PerformanceDebuggingPage,
+      ),
   },
 ];
 
 // Reusing one loader keeps all three strategy routes pointed at the same educational component.
 function loadRenderingStrategiesPage() {
-  return import(
-    './lessons/rendering-strategies/rendering-strategies-page/rendering-strategies-page'
-  ).then((module) => module.RenderingStrategiesPage);
+  return import('./lessons/rendering-strategies/rendering-strategies-page/rendering-strategies-page').then(
+    (module) => module.RenderingStrategiesPage,
+  );
 }
