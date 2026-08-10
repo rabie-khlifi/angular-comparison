@@ -45,11 +45,47 @@ h1 {
   font-size: clamp(1.05rem, 2vw, 1.25rem);
   line-height: 1.7;
 }
+.hero-actions {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 1.25rem;
+  align-items: center;
+  margin-top: 2rem;
+}
+.github-link {
+  display: inline-flex;
+  gap: 0.65rem;
+  align-items: center;
+  padding: 0.7rem 1rem;
+  border-radius: 0.65rem;
+  color: #172033;
+  background: white;
+  font-weight: 800;
+  text-decoration: none;
+  box-shadow: 0 0.4rem 1rem rgb(15 23 42 / 18%);
+  transition:
+    background-color 160ms ease,
+    transform 160ms ease;
+}
+.github-link:hover {
+  background: #dbeafe;
+  transform: translateY(-0.1rem);
+}
+.github-link:focus-visible {
+  outline: 3px solid #bfdbfe;
+  outline-offset: 3px;
+}
+.github-link svg {
+  width: 1.35rem;
+  height: 1.35rem;
+  fill: currentColor;
+}
 .highlights {
   display: flex;
   flex-wrap: wrap;
   gap: 0.65rem;
-  margin-top: 2rem;
 }
 .highlights span {
   padding: 0.5rem 0.8rem;
@@ -165,6 +201,7 @@ h2 {
   }
 }
 @media (prefers-reduced-motion: reduce) {
+  .github-link,
   .lesson-card,
   .open-label span {
     transition: none;
